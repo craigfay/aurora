@@ -14,6 +14,8 @@
 Execute psql commands: `docker exec -it pg-container psql -U postgres`
 * list databases `\l`
 * create database: `CREATE DATABASE koa_api;`
+* switch to a database `\c koa_api`
+* show tables in the current schema `\dt`
 
 Get the ip address of postgres container: 
 ` docker inspect --format '{{ .NetworkSettings.IPAddress }}' pg-container`
