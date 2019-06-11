@@ -11,7 +11,7 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_USER: user 
+      POSTGRES_USER: postgres 
       POSTGRES_DB: primary_db 
     ports:
       - "15432:5432"
@@ -40,7 +40,7 @@ services:
       - "postgres"
       - "redis"
     environment:
-      DB_HOST: postgres://user:password@postgres/primary_db
+      DB_HOST: postgres://postgres:password@postgres/primary_db
       REDIS_HOST: redis
     depends_on:
       postgres:

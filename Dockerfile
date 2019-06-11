@@ -24,4 +24,5 @@ EXPOSE 9229
 # the command line to run when the container is started
 # TODO make sure migrations run before `npm start`
 CMD [ "npx", "knex", "migrate:latest" ]
-CMD [ "npm", "start" ]
+# CMD [ "npm", "start" ]
+CMD [ "npm", "test" ]
