@@ -1,7 +1,8 @@
 {
-  "name": "basic-node-server",
+  "name": "aurora",
   "version": "1.0.0",
   "description": "",
+  "repository": "https://github.com/craigfay/aurora",
   "main": "server.js",
   "scripts": {
     "start": "node_modules/.bin/nodemon --exec node --harmony --inspect=0.0.0.0:9229 server.js"
