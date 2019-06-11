@@ -9,4 +9,4 @@ router.get('/', async (ctx) => {
   };
 })
 
-module.exports = router;
+module.exports = { router };

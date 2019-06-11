@@ -13,5 +13,7 @@ Resources:
 
 * [User Authentication with Passport and Koa](http://mherman.org/blog/2018/01/02/user-authentication-with-passport-and-koa)
 
+* [API testing with Jest](https://hackernoon.com/api-testing-with-jest-d1ab74005c0a)
+
 ## Todo
 Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `

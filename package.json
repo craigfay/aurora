@@ -4,13 +4,14 @@
   "description": "",
   "repository": "https://github.com/craigfay/aurora",
   "scripts": {
-    "start": "node_modules/.bin/nodemon --exec node --harmony --inspect=0.0.0.0:9229 src/http/server.js"
+    "start": "node_modules/.bin/nodemon --exec node --harmony --inspect=0.0.0.0:9229 src/http/server.js",
+    "test": "./node_modules/mocha/bin/_mocha ./test/*.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "chai-http": "^3.0.0",
+    "jest": "^24.8.0",
     "nodemon": "^1.19.1"
   },
   "dependencies": {
