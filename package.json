@@ -3,18 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "repository": "https://github.com/craigfay/aurora",
-  "main": "server.js",
   "scripts": {
-    "start": "node_modules/.bin/nodemon --exec node --harmony --inspect=0.0.0.0:9229 server.js"
+    "start": "node_modules/.bin/nodemon --exec node --harmony --inspect=0.0.0.0:9229 src/http/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chai-http": "^3.0.0",
     "nodemon": "^1.19.1"
   },
   "dependencies": {
     "knex": "^0.17.5",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
     "pg": "^7.11.0"
   }
 }

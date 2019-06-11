@@ -12,3 +12,6 @@ Resources:
 * [Building a RESTful API with Koa and Postgres](http://mherman.org/blog/2017/08/23/building-a-restful-api-with-koa-and-postgres)
 
 * [User Authentication with Passport and Koa](http://mherman.org/blog/2018/01/02/user-authentication-with-passport-and-koa)
+
+## Todo
+Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
