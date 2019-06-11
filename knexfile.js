@@ -1,26 +1,19 @@
 const path = require('path');
 
-const BASE_PATH = path.join(__dirname, 'src', 'server', 'db');
+const BASE_PATH = path.join(__dirname, 'src', 'db');
 
 module.exports = {
-  test: {
-    client: 'pg',
-    connection: 'postgres://172.17.0.2:5432/koa_api_test',
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations')
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds')
-    }
-  },
+
   development: {
-    client: 'pg',
-    connection: 'postgres://172.17.0.2:5432/koa_api',
+    client: 'postgresql',
+    connection: process.env.DB_CONNECTION,
     migrations: {
-      directory: path.join(BASE_PATH, 'migrations')
+      tableName: 'knex_migrations',
+      directory: path.join(BASE_PATH, 'migrations'),
     },
     seeds: {
-      directory: path.join(BASE_PATH, 'seeds')
-    }
-  }
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
 };
+
