@@ -26,6 +26,7 @@ services:
     # will forward from localhost -> container
     ports:
       - "4000:4000"
+      - "9229:9229"
     # tell docker compose to watch ./server.js - the path relative
     # to our compose file on our computer - and then make that reflect
     # the same file at /usr/src/app/server.js inside of the container
