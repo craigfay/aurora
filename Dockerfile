@@ -25,5 +25,4 @@ EXPOSE 9229
 # TODO make sure migrations run before `npm start`
 CMD [ "npx", "knex", "migrate:latest" ]
 CMD ["knex" "seed:run" "--env development" ]
-# CMD [ "npx", "nodemon", "src/server/start.js" ]
 CMD [ "npm", "run", "watch" ]

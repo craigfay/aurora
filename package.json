@@ -1,6 +1,7 @@
 {
-  "name": "node-koa-api",
+  "name": "aurora",
   "version": "0.0.0",
+  "repository": "https://github.com/craigfay/aurora",
   "private": true,
   "scripts": {
     "start": "node ./src/server/start.js",
@@ -9,7 +10,7 @@
     "watch": "npx tsc-watch --onSuccess \"npm run start\""
   },
   "keywords": [],
-  "author": "Craig Fay",
+  "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^11.11.6",

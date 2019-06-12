@@ -1,6 +1,6 @@
 const path = require('path');
 
-const BASE_PATH = path.join(__dirname, 'src', 'server', 'db');
+const BASE_PATH = path.join(__dirname, 'src', 'db');
 
 module.exports = {
   test: {
@@ -17,10 +17,12 @@ module.exports = {
     client: 'pg',
     connection: process.env.DB_HOST,
     migrations: {
-      directory: path.join(BASE_PATH, 'migrations')
+      tableName: 'knex_migrations',
+      directory: path.join(BASE_PATH, 'migrations'),
     },
     seeds: {
-      directory: path.join(BASE_PATH, 'seeds')
-    }
-  }
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
 };
+
