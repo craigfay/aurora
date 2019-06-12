@@ -4,7 +4,7 @@
   "repository": "https://github.com/craigfay/aurora",
   "private": true,
   "scripts": {
-    "start": "node ./src/server/start.js",
+    "start": "node ./src/http/server.js",
     "build": "npx tsc",
     "test": "./node_modules/mocha/bin/_mocha ./test/**/*.test.js",
     "watch": "npx tsc-watch --onSuccess \"npm run start\""

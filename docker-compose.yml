@@ -58,4 +58,4 @@ services:
         # 
         # Another option is service_healthy which requires that a healthcheck
         # property is configured above
-        condition: service_healthy
+        condition: service_started
