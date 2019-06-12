@@ -1,0 +1,61 @@
+# The docker-compose DSL syntax format we're using
+version: "2.1"
+
+# The containers we want to start and the images to start
+# them from
+services:
+
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
+
+  postgres:
+    container_name: database
+    build:
+      context: "."
+      dockerfile: "Dockerfile.postgres"
+    restart: always
+    ports:
+      - "15432:5432"
+    volumes:
+      - .:/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  node:
+    container_name: webserver
+    # the directory path - relative to this compose file - where
+    # we'll be able to find the Dockerfile
+    build: ./
+    # the port mappings we do so that traffic that docker
+    # will forward from localhost -> container
+    ports:
+      - "4000:4000"
+      - "9229:9229"
+    # tell docker compose to watch ./server.js - the path relative
+    # to our compose file on our computer - and then make that reflect
+    # the same file at /usr/src/app/server.js inside of the container
+    volumes:
+      - "./:/usr/src/app"
+    links:
+      - "postgres"
+      - "redis"
+    environment:
+      DB_HOST: postgres://postgres:password@postgres/primary_db
+      TEST_DB_HOST: postgres://postgres:password@postgres/test_db
+      REDIS_HOST: redis://cache
+      REDIS_PORT: 6379
+    depends_on:
+      postgres:
+        # we provide a condition - either service_started or service_healthy
+        # as the value. If we say service_started, then if docker was able to
+        # build the image and just start a container instance then we'll move on.
+        # 
+        # Another option is service_healthy which requires that a healthcheck
+        # property is configured above
+        condition: service_healthy
