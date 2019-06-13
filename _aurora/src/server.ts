@@ -5,7 +5,7 @@ import * as staticFiles from 'koa-static';
 
 export class Server {
 
-  middleware: Array<(request:any) => any>;
+  middleware: Array<(request:any, context:object) => any>;
   options: {
     port: number;
     staticFileDirectory?: string;
@@ -34,9 +34,15 @@ export class Server {
     
     app.use(async ctx => {
       const request = this.adaptRequest(ctx);
-      const [handle] = this.middleware;
-      const response = await handle(request);
-      this.adaptResponse(response, ctx);
+      const context = {};
+
+      for (const handler of this.middleware) {
+        const response = await handler(request, context);
+        if (response) {
+          this.adaptResponse(response, ctx);
+        }
+      }
+
     });
 
     await app.listen(port);
