@@ -3,20 +3,25 @@ import * as bodyParser from 'koa-bodyparser';
 import * as cors from '@koa/cors';
 import * as staticFiles from 'koa-static';
 
-export class Server {
+import {
+  ServerInterface,
+  ServerOptionsInterface,
+  RequestInterface,
+  ResponseInterface,
+  RequestHandlerType,
+} from './server.types';
 
-  middleware: Array<(request:any, context:object) => any>;
-  options: {
-    port: number;
-    staticFileDirectory?: string;
-  };
+export class Server implements ServerInterface {
 
-  constructor(options) {
+  middleware: RequestHandlerType[];
+  options: ServerOptionsInterface;
+
+  constructor(options: ServerOptionsInterface) {
     this.middleware = [];
     this.options = options;
   }
 
-  use(handler) {
+  use(handler: RequestHandlerType) {
     this.middleware.push(handler);
   }
 
@@ -37,7 +42,7 @@ export class Server {
       const context = {};
 
       for (const handler of this.middleware) {
-        const response = await handler(request, context);
+        const response: ResponseInterface | void = await handler(request, context);
         if (response) {
           this.adaptResponse(response, ctx);
         }
@@ -49,7 +54,7 @@ export class Server {
     if (callback) callback();
   }
 
-  private adaptRequest(ctx) {
+  private adaptRequest(ctx): RequestInterface {
     const {
       method,
       url,
@@ -65,90 +70,14 @@ export class Server {
     });
   }
 
-  private adaptResponse(response, ctx) {
+  private adaptResponse(response: ResponseInterface, ctx) {
     // Status Code
     ctx.response.status = response.status;
-
     // Headers
     for (const [name, value] of Object.entries(response.headers)) {
       ctx.set(name, value);
     }
-
     // Body
     ctx.response.body = response.body;
   }
-
-}
-
-// createServer(function (req, res) {
-//   res.writeHead(200, {'Content-Type': 'text/plain'});
-//   res.write('Hello World!');
-//   res.end();
-// }).listen(8080);
-
-
-export interface HttpDriver {
-  server : HttpServer;
-  response : (response : HttpResponse) => HttpResponse;
-}
-
-export interface HttpServer {
-  start : () => any; handleRoutes : () => any;
-}
- 
-export interface HttpRequest {
-  url : string;
-  segments : object;
-  querystring: object;
-  method? : string;
-  headers : object;
-  body : string;
-  cookies : { get : any };
-}
-
-export interface HttpResponse {
-  status : number;
-  headers : HttpHeaders;
-  body : string | object;
-  cookies : object;
-}
-
-interface HttpHeaders {
-  [key : string] : string;
-}
-
-export interface RequestHeaders {
-  string: string;
-  object: object;
-}
-
-export interface RequestBody {
-  isJSON : boolean;
-  string: string;
-  object: object;
-}
-
-export interface HttpRequestHandler {
-  (request : HttpRequest): HttpResponse | undefined;
-}
-
-export interface RouteHandlerPairs {
-  [route : string]: HttpRequestHandler;
-}
-
-interface handleRoutes {
-  (routeHandlers : RouteHandlerPairs ) : void;
-}
-
-interface CreateServer {
-  (config:object) : any;
-}
-
-interface Response{
-  (options:object) : object;
-}
-
-export interface ModuleExport {
-  createServer:CreateServer;
-  response:Response;
 }

@@ -9,10 +9,6 @@ s.use(function(request, context) {
 });
 
 s.use(function(request, context) {
-  console.log(context);
-});
-
-s.use(function(request, context) {
   return {
     status: 200,
     headers: {'foo': 'bar'},
