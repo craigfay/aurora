@@ -4,16 +4,17 @@ const port = 8000;
 
 const s = new Server({ port });
 
-s.use(function(request, context) {
-  context.greeting = 'hello';
-});
+s.route('meh', '/', function(request, context) {
+  context.phrase = 'heeee';
+})
 
-s.use(function(request, context) {
+s.route('meh', '/', function(request, context) {
+  console.log(context.phrase);
   return {
     status: 200,
     headers: {'foo': 'bar'},
-    body: 'why hello',
+    body: 'why hola',
   }
-});
+})
 
 s.listen(() => console.log('listening on', port));

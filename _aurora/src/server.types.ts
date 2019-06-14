@@ -3,7 +3,7 @@
  */
 
 export interface ServerInterface {
-  use: (RequestHandlerType) => void;
+  route: (method, path, handler:RequestHandlerType) => void;
   listen: (callback: Function) => void;
 }
 
