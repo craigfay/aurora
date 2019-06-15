@@ -58,7 +58,7 @@ export class HttpServer implements HttpServerInterface {
           adaptResponse(response, ctx);
         } else {
           ctx._meta = meta;
-          await next(request, meta);
+          await next();
         }
     })
   }
