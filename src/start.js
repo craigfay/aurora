@@ -1,20 +1,18 @@
-const { Server } = require('../_aurora/dist/server');
+const { HttpServer } = require('../_aurora/dist/server');
 
 const port = 8000;
+const requests = new HttpServer({ port });
 
-const s = new Server({ port });
-
-s.route('meh', '/', function(request, context) {
-  context.phrase = 'heeee';
+requests.route('GET', '/', (request, meta) => {
+  meta.greeting = 'hello';
 })
 
-s.route('meh', '/', function(request, context) {
-  console.log(context.phrase);
+requests.route('GET', '/', (request, meta) => {
   return {
     status: 200,
-    headers: {'foo': 'bar'},
-    body: 'why hola',
+    headers: { 'foo': 'bar' },
+    body: 'why, ' + meta.greeting,
   }
 })
 
-s.listen(() => console.log('listening on', port));
+requests.listen(() => console.log('listening for requests on', port));

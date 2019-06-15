@@ -5,14 +5,14 @@ import * as cors from '@koa/cors';
 import * as staticFiles from 'koa-static';
 
 import {
-  ServerInterface,
-  ServerOptionsInterface,
-  RequestInterface,
-  ResponseInterface,
+  HttpServerInterface,
+  HttpServerOptionsInterface,
+  HttpRequestInterface,
+  HttpResponseInterface,
   RequestHandlerType,
 } from './server.types';
 
-function adaptRequest(ctx): RequestInterface {
+function adaptRequest(ctx): HttpRequestInterface {
   const {
     method,
     url,
@@ -28,7 +28,7 @@ function adaptRequest(ctx): RequestInterface {
   });
 }
 
-function adaptResponse(response: ResponseInterface, ctx) {
+function adaptResponse(response: HttpResponseInterface, ctx) {
   // Status Code
   ctx.response.status = response.status;
   // Headers
@@ -39,12 +39,11 @@ function adaptResponse(response: ResponseInterface, ctx) {
   ctx.response.body = response.body;
 }
 
-export class Server implements ServerInterface {
-
+export class HttpServer implements HttpServerInterface {
   router: any;
-  options: ServerOptionsInterface;
+  options: HttpServerOptionsInterface;
 
-  constructor(options: ServerOptionsInterface) {
+  constructor(options: HttpServerOptionsInterface) {
     this.options = options;
     this.router = new KoaRouter();
   }
@@ -52,20 +51,19 @@ export class Server implements ServerInterface {
   route(method:string, path:string, handler: RequestHandlerType) {
     this.router.get(path, async (ctx, next) => {
         const request = adaptRequest(ctx);
-        const context = {};
+        const meta = ctx._meta || {};
 
-        const response: ResponseInterface | void = await handler(request, context);
+        const response: HttpResponseInterface | void = await handler(request, meta);
         if (response) {
           adaptResponse(response, ctx);
         } else {
-          await next(ctx);
+          ctx._meta = meta;
+          await next(request, meta);
         }
     })
   }
 
-
   async listen(callback) {
-
     const { port, staticFileDirectory } = this.options;
     const app = new Koa();
 
@@ -81,5 +79,4 @@ export class Server implements ServerInterface {
     await app.listen(port);
     if (callback) callback();
   }
-
 }

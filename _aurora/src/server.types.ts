@@ -1,26 +1,27 @@
 /**
- * Types and Interfaces that describe how an HTTP Server ought to behave
+ * Types and Interfaces that describe how an HttpServer ought to behave
+ * TODO validate outgoing HttpRequests
  */
 
-export interface ServerInterface {
+export interface HttpServerInterface {
   route: (method, path, handler:RequestHandlerType) => void;
   listen: (callback: Function) => void;
 }
 
-export interface ServerConstructorInterface {
-  new (options: object): ServerInterface;
+export interface HttpServerConstructorInterface {
+  new (options: object): HttpServerInterface;
 }
 
-export interface ServerOptionsInterface {
+export interface HttpServerOptionsInterface {
   port: number;
   staticFileDirectory?: string;
 }
 
-export interface HeadersInterface {
+export interface HttpHeadersInterface {
   [name: string]: string;
 }
 
-export interface RequestInterface {
+export interface HttpRequestInterface {
   url: string;
   method: string;
   headers: object;
@@ -30,10 +31,14 @@ export interface RequestInterface {
   querystring?: object;
 }
 
-export interface ResponseInterface {
+export interface HttpResponseInterface {
   status: number;
-  headers: HeadersInterface;
+  headers: HttpHeadersInterface;
   body: string;
 }
 
-export type RequestHandlerType = (request: RequestInterface, context: object) => ResponseInterface | void;
+export type RequestHandlerType = (
+  request: HttpRequestInterface,
+  meta: object,
+) => HttpResponseInterface | void;
+
