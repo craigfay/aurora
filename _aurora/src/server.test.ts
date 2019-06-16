@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
-import { get } from 'http';
 import { HttpServer } from './server'
-import { promisify } from 'util';
+import * as fetch from 'node-fetch';
 
 function setup() {
   const port = 8000;
@@ -19,35 +18,14 @@ function setup() {
   requests.listen();
 }
 
-function asyncBody(res) {
-  return new Promise((resolve, reject) => {
-    let body = '';
-    res.on('data', data => body += data);
-    res.on('end', () => {
-      resolve(body);
-    });
-  })
-}
-
 async function run() {
-  get[promisify.custom] = function getAsync(options) {
-    return new Promise((resolve, reject) => {
-      get(options, (response) => {
-        resolve(response);
-      }).on('error', reject);
-    });
-  };
-  
-  const asyncGet = promisify(get);
-  // @ts-ignore
-  const res = await asyncGet('http://0.0.0.0:8000');
-  assert.equal(res.statusCode, 200);
-  assert.equal(res.headers['vary'], 'Origin');
-  assert.equal(res.headers['some'], 'Pig');
-  assert.equal(res.headers['content-type'], 'text/plain; charset=utf-8');
-  assert.equal(res.headers['connection'], 'close');
-  const body = await asyncBody(res);
-  assert.equal(body , 'Wilber didn\'t want food. He wanted love');
+  const res = await fetch('http://0.0.0.0:8000');
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('vary'), 'Origin');
+  assert.equal(res.headers.get('some'), 'Pig');
+  assert.equal(res.headers.get('content-type'), 'text/plain; charset=utf-8');
+  assert.equal(res.headers.get('connection'), 'close');
+  assert.equal(await res.text(), 'Wilber didn\'t want food. He wanted love');
 }
 
 async function requestBasicsTest() {
