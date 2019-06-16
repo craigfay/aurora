@@ -63,7 +63,7 @@ export class HttpServer implements HttpServerInterface {
     })
   }
 
-  async listen(callback) {
+  async listen(callback?) {
     const { port, staticFileDirectory } = this.options;
     const app = new Koa();
 

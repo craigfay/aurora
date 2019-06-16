@@ -39,6 +39,6 @@ export interface HttpResponseInterface {
 
 export type RequestHandlerType = (
   request: HttpRequestInterface,
-  meta: object,
+  meta: { [key: string]: any; },
 ) => HttpResponseInterface | void;
 
