@@ -30,15 +30,24 @@ function asyncBody(res) {
 }
 
 async function run() {
-  get('http://0.0.0.0:8000', async res => {
-    assert.equal(res.statusCode, 200);
-    assert.equal(res.headers['vary'], 'Origin');
-    assert.equal(res.headers['some'], 'Pig');
-    assert.equal(res.headers['content-type'], 'text/plain; charset=utf-8');
-    assert.equal(res.headers['connection'], 'close');
-    const body = await asyncBody(res);
-    await assert.equal(body , 'Wilber didn\'t want food. He wanted love');
-  });
+  get[promisify.custom] = function getAsync(options) {
+    return new Promise((resolve, reject) => {
+      get(options, (response) => {
+        resolve(response);
+      }).on('error', reject);
+    });
+  };
+  
+  const asyncGet = promisify(get);
+  // @ts-ignore
+  const res = await asyncGet('http://0.0.0.0:8000');
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.headers['vary'], 'Origin');
+  assert.equal(res.headers['some'], 'Pig');
+  assert.equal(res.headers['content-type'], 'text/plain; charset=utf-8');
+  assert.equal(res.headers['connection'], 'close');
+  const body = await asyncBody(res);
+  assert.equal(body , 'Wilber didn\'t want food. He wanted love');
 }
 
 async function requestBasicsTest() {
@@ -47,4 +56,3 @@ async function requestBasicsTest() {
 }
 
 requestBasicsTest();
-
