@@ -2,6 +2,11 @@ import { strict as assert } from 'assert';
 import { HttpServer } from './server'
 import * as fetch from 'node-fetch';
 
+export const tests = [
+  defaultHeadersTest,
+  handlerMetaTest,
+];
+
 async function defaultHeadersTest() {
   const description = `Server responses should specify certain
   headers by default`;
@@ -73,8 +78,3 @@ async function handlerMetaTest() {
     return false;
   }
 }
-
-export const tests = [
-  defaultHeadersTest,
-  handlerMetaTest,
-];

@@ -5,7 +5,8 @@
 
 export interface HttpServerInterface {
   route: (method, path, handler:RequestHandlerType) => void;
-  listen: (callback: Function) => void;
+  listen: () => void;
+  close: () => void;
 }
 
 export interface HttpServerConstructorInterface {
