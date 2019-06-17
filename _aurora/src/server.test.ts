@@ -1,11 +1,12 @@
 import { strict as assert } from 'assert';
-import { HttpServer } from './server'
+import { HttpServer, HttpResponse } from './server'
 import * as fetch from 'node-fetch';
 
 export const tests = [
   defaultHeadersTest,
   handlerMetaTest,
   routeMethods,
+  responseConstructor,
 ];
 
 async function defaultHeadersTest() {
@@ -23,7 +24,7 @@ async function defaultHeadersTest() {
         body: ''
       }
     })
-    requests.listen();
+    await requests.listen();
     
     // Make A request to the server defined above
     const res = await fetch('http://0.0.0.0:8000');
@@ -35,7 +36,7 @@ async function defaultHeadersTest() {
     assert.equal(res.headers.get('content-type'), 'text/plain; charset=utf-8');
     assert.equal(res.headers.get('connection'), 'close');
     assert.equal(res.headers.get('content-length'), '0');
-    requests.close();
+    await requests.close();
     return true;
 
   } catch (e) {
@@ -62,13 +63,13 @@ async function handlerMetaTest() {
         body: 'Wilber didn\'t want food. He wanted ' + meta.desire,
       }
     })
-    requests.listen();
+    await requests.listen();
     
     // Make A request to the server defined above
     const res = await fetch('http://0.0.0.0:8001');
     assert.equal(res.status, 200);
     assert.equal(await res.text(), 'Wilber didn\'t want food. He wanted love');
-    requests.close();
+    await requests.close();
     return true;
   }
 
@@ -98,6 +99,31 @@ async function routeMethods() {
     catch (e) {
       assert.equal(e.message, 'Unsupported verb "SAVE".')
     }
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function responseConstructor() {
+  const description = `The HttpResponse constructor
+  can be used to validate return material, and allows
+  passing only some of the required properties`;
+
+  try {
+    // Start up an http server
+    const port = 8002;
+    const requests = new HttpServer({ port });
+    requests.route('GET', '/', (request, meta) => {
+      return new HttpResponse({
+        status: 200,
+      })
+    })
+
+    await requests.listen();
+    await requests.close();
+    return true;
+
   } catch (e) {
     console.error(e);
     return false;

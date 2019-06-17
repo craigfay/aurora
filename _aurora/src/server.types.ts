@@ -26,7 +26,7 @@ export interface HttpRequestInterface {
   url: string;
   method: string;
   headers: object;
-  body: string;
+  body: string; // Eventually allow streamable object
   // Not sure if these will be included yet
   segments? : object;
   querystring?: object;
@@ -36,6 +36,12 @@ export interface HttpResponseInterface {
   status: number;
   headers: HttpHeadersInterface;
   body: string;
+}
+
+export interface HttpResponseMaterial {
+  status?: number;
+  headers?: HttpHeadersInterface;
+  body?: string;
 }
 
 export type RequestHandlerType = (

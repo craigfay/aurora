@@ -8,37 +8,12 @@ import {
   HttpServerInterface,
   HttpServerOptionsInterface,
   HttpRequestInterface,
+  HttpHeadersInterface,
   HttpResponseInterface,
+  HttpResponseMaterial,
   RequestHandlerType,
 } from './server.types';
 import { Server } from 'https';
-
-function adaptRequest(ctx): HttpRequestInterface {
-  const {
-    method,
-    url,
-    headers, 
-    body,
-  } = ctx;
-  
-  return Object.freeze({
-    method,
-    url,
-    headers,
-    body,
-  });
-}
-
-function adaptResponse(response: HttpResponseInterface, ctx) {
-  // Status Code
-  ctx.response.status = response.status;
-  // Headers
-  for (const [name, value] of Object.entries(response.headers)) {
-    ctx.set(name, value);
-  }
-  // Body
-  ctx.response.body = response.body;
-}
 
 export class HttpServer implements HttpServerInterface {
   router: any;
@@ -90,4 +65,44 @@ export class HttpServer implements HttpServerInterface {
       this.service.close();
     }
   }
+}
+
+export class HttpResponse implements HttpResponseInterface {
+  status: number;
+  headers: HttpHeadersInterface;
+  body: string;
+
+  constructor(options?: HttpResponseMaterial) {
+    // @TODO validate
+    this.status = options.status || 500;
+    this.headers = options.headers || {};
+    this.body = options.body || '';
+  }
+}
+
+function adaptRequest(ctx): HttpRequestInterface {
+  const {
+    method,
+    url,
+    headers, 
+    body,
+  } = ctx;
+  
+  return Object.freeze({
+    method,
+    url,
+    headers,
+    body,
+  });
+}
+
+function adaptResponse(response: HttpResponseInterface, ctx) {
+  // Status Code
+  ctx.response.status = response.status;
+  // Headers
+  for (const [name, value] of Object.entries(response.headers)) {
+    ctx.set(name, value);
+  }
+  // Body
+  ctx.response.body = response.body;
 }
