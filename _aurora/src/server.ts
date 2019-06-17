@@ -51,7 +51,11 @@ export class HttpServer implements HttpServerInterface {
   }
 
   route(method:string, path:string, handler: RequestHandlerType) {
-    this.router.get(path, async (ctx, next) => {
+    const verb = method.toLowerCase();
+    if ('function' !== typeof this.router[verb]) {
+      throw new Error(`Unsupported verb "${method}".`);
+    }
+    this.router[verb](path, async (ctx, next) => {
         const request = adaptRequest(ctx);
         const meta = ctx._meta || {};
 

@@ -5,6 +5,7 @@ import * as fetch from 'node-fetch';
 export const tests = [
   defaultHeadersTest,
   handlerMetaTest,
+  routeMethods,
 ];
 
 async function defaultHeadersTest() {
@@ -34,7 +35,6 @@ async function defaultHeadersTest() {
     assert.equal(res.headers.get('content-type'), 'text/plain; charset=utf-8');
     assert.equal(res.headers.get('connection'), 'close');
     assert.equal(res.headers.get('content-length'), '0');
-    // Stop the server
     requests.close();
     return true;
 
@@ -68,12 +68,37 @@ async function handlerMetaTest() {
     const res = await fetch('http://0.0.0.0:8001');
     assert.equal(res.status, 200);
     assert.equal(await res.text(), 'Wilber didn\'t want food. He wanted love');
-    // Stop the server
     requests.close();
     return true;
   }
 
   catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function routeMethods() {
+  const description = `Unsupported request methods should
+  cause errors`;
+
+  try {
+    // Start up an http server
+    const port = 8000;
+    const requests = new HttpServer({ port });
+    try {
+      requests.route('SAVE', '/', (request, meta) => {
+        return {
+          status: 200,
+          headers: {},
+          body: ''
+        }
+      })
+    }
+    catch (e) {
+      assert.equal(e.message, 'Unsupported verb "SAVE".')
+    }
+  } catch (e) {
     console.error(e);
     return false;
   }
