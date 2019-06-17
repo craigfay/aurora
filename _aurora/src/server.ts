@@ -11,6 +11,7 @@ import {
   HttpResponseInterface,
   RequestHandlerType,
 } from './server.types';
+import { Server } from 'https';
 
 function adaptRequest(ctx): HttpRequestInterface {
   const {
@@ -42,6 +43,7 @@ function adaptResponse(response: HttpResponseInterface, ctx) {
 export class HttpServer implements HttpServerInterface {
   router: any;
   options: HttpServerOptionsInterface;
+  service: Server;
 
   constructor(options: HttpServerOptionsInterface) {
     this.options = options;
@@ -76,7 +78,15 @@ export class HttpServer implements HttpServerInterface {
 
     app.use(this.router.routes());
 
-    await app.listen(port);
+    this.service = await app.listen(port);
     if (callback) callback();
+  }
+
+  close() {
+    if (this.service) {
+      this.service.close();
+      return true;
+    }
+    return false;
   }
 }
