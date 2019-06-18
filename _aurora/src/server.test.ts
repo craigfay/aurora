@@ -5,7 +5,7 @@ import * as fetch from 'node-fetch';
 export const tests = [
   defaultHeadersTest,
   handlerMetaTest,
-  routeMethods,
+  illegalRouteMethods,
   responseConstructor,
 ];
 
@@ -15,8 +15,7 @@ async function defaultHeadersTest() {
 
   try {
     // Start up an http server
-    const port = 8000;
-    const requests = new HttpServer({ port });
+    const requests = new HttpServer({ port: 8000 });
     requests.route('GET', '/', (request, meta) => {
       return {
         status: 200,
@@ -51,8 +50,7 @@ async function handlerMetaTest() {
 
   try {
     // Start up an http server
-    const port = 8001;
-    const requests = new HttpServer({ port });
+    const requests = new HttpServer({ port: 8001 });
     requests.route('GET', '/', (request, meta) => {
       meta.desire = 'love';
     })
@@ -79,26 +77,22 @@ async function handlerMetaTest() {
   }
 }
 
-async function routeMethods() {
-  const description = `Unsupported request methods should
-  cause errors`;
+async function illegalRouteMethods() {
+  const description = `Registering Unsupported 
+  request methods should throw an error`;
 
   try {
-    // Start up an http server
-    const port = 8000;
-    const requests = new HttpServer({ port });
-    try {
+    const registerIllegalRoute = () => {
+      const requests = new HttpServer({ port: 8002 });
       requests.route('SAVE', '/', (request, meta) => {
-        return {
-          status: 200,
-          headers: {},
-          body: ''
-        }
+        return new HttpResponse({ status: 200 });
       })
     }
-    catch (e) {
-      assert.equal(e.message, 'Unsupported verb "SAVE".')
-    }
+
+    assert.throws(registerIllegalRoute, {
+      message: 'Unsupported verb "SAVE".'
+    })
+      
   } catch (e) {
     console.error(e);
     return false;
@@ -112,8 +106,7 @@ async function responseConstructor() {
 
   try {
     // Start up an http server
-    const port = 8002;
-    const requests = new HttpServer({ port });
+    const requests = new HttpServer({ port: 8003 });
     requests.route('GET', '/', (request, meta) => {
       return new HttpResponse({
         status: 200,
