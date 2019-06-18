@@ -74,7 +74,7 @@ export class HttpResponse implements HttpResponseInterface {
 
   constructor(options?: HttpResponseMaterial) {
     // @TODO validate
-    this.status = options.status || 500;
+    this.status = options.status || 200;
     this.headers = options.headers || {};
     this.body = options.body || '';
   }

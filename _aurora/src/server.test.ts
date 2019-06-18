@@ -85,7 +85,7 @@ async function illegalRouteMethods() {
     const registerIllegalRoute = () => {
       const requests = new HttpServer({ port: 8002 });
       requests.route('SAVE', '/', (request, meta) => {
-        return new HttpResponse({ status: 200 });
+        return new HttpResponse();
       })
     }
 
@@ -108,9 +108,7 @@ async function responseConstructor() {
     // Start up an http server
     const requests = new HttpServer({ port: 8003 });
     requests.route('GET', '/', (request, meta) => {
-      return new HttpResponse({
-        status: 200,
-      })
+      return new HttpResponse();
     })
 
     await requests.listen();
