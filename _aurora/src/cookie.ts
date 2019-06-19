@@ -44,10 +44,8 @@ function stringifyOne(cookie: Cookie) {
 
   let { name, value, ...attributes } = cookie;
 
-  if (!attributes.path) attributes.path = '/';
-
   if (typeof attributes.expires === 'number') {
-    const expirationString = new Date(new Date() * 1 + attributes.expires * 864e+5);
+    const expirationString = new Date(+new Date() + attributes.expires * 864e+5);
   }
   else if (attributes.expires instanceof Date) {
     // We're using "expires" because "max-age" is not supported by IE
