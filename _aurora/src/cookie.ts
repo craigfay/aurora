@@ -1,15 +1,7 @@
-import { strict as assert } from 'assert';
-import { HttpResponse } from './server';
-import { HttpRequestInterface } from './server.types';
-
-export interface Cookies {
-  [key: string]: string;
-}
-
 export interface Cookie {
   name: string;
   value: string;
-  expires?: Date;
+  expires?: Date | number;
   maxAge?: number;
   domain?: string;
   path?: string;
@@ -21,143 +13,80 @@ export interface Cookie {
 
 export type SameSite = "Strict" | "Lax";
 
-function toString(cookie: Cookie): string {
-  const out: string[] = [];
-  out.push(`${cookie.name}=${cookie.value}`);
-
-  // Fallback for invalid Set-Cookie
-  // ref: https://tools.ietf.org/html/draft-ietf-httpbis-cookie-prefixes-00#section-3.1
-  if (cookie.name.startsWith("__Secure")) {
-    cookie.secure = true;
+/**
+ * Parse the "Cookies" header value into an object
+ * @param cookies
+ */
+export function parse(cookies: string): object {
+  const out = {};
+  const c = cookies!.split(";");
+  for (const kv of c) {
+    const cookieVal = kv.split("=");
+    const key = cookieVal.shift()!.trim();
+    out[key] = cookieVal.join("=");
   }
-  if (cookie.name.startsWith("__Host")) {
-    cookie.path = "/";
-    cookie.secure = true;
-    delete cookie.domain;
-  }
-
-  if (cookie.secure) {
-    out.push("Secure");
-  }
-  if (cookie.httpOnly) {
-    out.push("HttpOnly");
-  }
-  if (Number.isInteger(cookie.maxAge!)) {
-    assert(cookie.maxAge! > 0, "Max-Age must be an integer superior to 0");
-    out.push(`Max-Age=${cookie.maxAge}`);
-  }
-  if (cookie.domain) {
-    out.push(`Domain=${cookie.domain}`);
-  }
-  if (cookie.sameSite) {
-    out.push(`SameSite=${cookie.sameSite}`);
-  }
-  if (cookie.path) {
-    out.push(`Path=${cookie.path}`);
-  }
-  if (cookie.expires) {
-    let dateString = toIMF(cookie.expires);
-    out.push(`Expires=${dateString}`);
-  }
-  if (cookie.unparsed) {
-    out.push(cookie.unparsed.join("; "));
-  }
-  return out.join("; ");
+  return out;
 }
 
 /**
- * Parse the cookies of the Server Request
- * @param req Server Request
+ * Convert the entire Cookie jar to its string form
  */
-export function getCookies(req: HttpRequestInterface): Cookies {
-  if (req.headers["Cookie"]) {
-    const out: Cookies = {};
-    const c = req.headers["Cookie"]!.split(";");
-    for (const kv of c) {
-      const cookieVal = kv.split("=");
-      const key = cookieVal.shift()!.trim();
-      out[key] = cookieVal.join("=");
+export function stringify(jar: Cookie[]) {
+  const cookies = jar.map(stringifyOne);
+  return cookies.join('; ');
+}
+
+/**
+ * Stringify a single Cookie
+ * @param cookie
+ */
+function stringifyOne(cookie: Cookie) {
+
+  let { name, value, ...attributes } = cookie;
+
+  if (!attributes.path) attributes.path = '/';
+
+  if (typeof attributes.expires === 'number') {
+    const expirationString = new Date(new Date() * 1 + attributes.expires * 864e+5);
+  }
+  else if (attributes.expires instanceof Date) {
+    // We're using "expires" because "max-age" is not supported by IE
+    const expirationString = attributes.expires ? attributes.expires.toUTCString() : '';
+  }
+
+  try {
+    var result = JSON.stringify(value);
+    if (/^[\{\[]/.test(result)) {
+      value = result;
     }
-    return out;
+  } catch (e) {}
+
+  value = encodeURIComponent(String(value))
+    .replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+
+  name = encodeURIComponent(String(name))
+    .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+    .replace(/[\(\)]/g, escape);
+
+  var stringifiedAttributes = '';
+  for (var attributeName in attributes) {
+    if (!attributes[attributeName]) {
+      continue;
+    }
+    stringifiedAttributes += '; ' + attributeName;
+    if (attributes[attributeName] === true) {
+      continue;
+    }
+
+    // Considers RFC 6265 section 5.2:
+    // ...
+    // 3.  If the remaining unparsed-attributes contains a %x3B (";")
+    //     character:
+    // Consume the characters of the unparsed-attributes up to,
+    // not including, the first %x3B (";") character.
+    // ...
+    stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
   }
-  return {};
-}
 
-/**
- * Set the cookie header properly in the Response
- * @param res Server Response
- * @param cookie Cookie to set
- * @param [cookie.name] Name of the cookie
- * @param [cookie.value] Value of the cookie
- * @param [cookie.expires] Expiration Date of the cookie
- * @param [cookie.maxAge] Max-Age of the Cookie. Must be integer superior to 0
- * @param [cookie.domain] Specifies those hosts to which the cookie will be sent
- * @param [cookie.path] Indicates a URL path that must exist in the request.
- * @param [cookie.secure] Indicates if the cookie is made using SSL & HTTPS.
- * @param [cookie.httpOnly] Indicates that cookie is not accessible via Javascript
- * @param [cookie.sameSite] Allows servers to assert that a cookie ought not to be
- *  sent along with cross-site requests
- * Example:
- *
- *     setCookie(response, { name: 'deno', value: 'runtime',
- *        httpOnly: true, secure: true, maxAge: 2, domain: "deno.land" });
- */
-export function setCookie(res: HttpResponse, cookie: Cookie): void {
-  // TODO (zekth) : Add proper parsing of Set-Cookie headers
-  // Parsing cookie headers to make consistent set-cookie header
-  // ref: https://tools.ietf.org/html/rfc6265#section-4.1.1
-  res.headers["Set-Cookie"] =  toString(cookie);
-}
-
-/**
- *  Set the cookie header properly in the Response to delete it
- * @param res Server Response
- * @param name Name of the cookie to Delete
- * Example:
- *
- *     delCookie(res,'foo');
- */
-export function delCookie(res: HttpResponse, name: string): void {
-  setCookie(res, {
-    name: name,
-    value: "",
-    expires: new Date(0)
-  });
-}
-
-/**
- * Parse a date to return a IMF formated string date
- * RFC: https://tools.ietf.org/html/rfc7231#section-7.1.1.1
- * IMF is the time format to use when generating times in HTTP
- * headers. The time being formatted must be in UTC for Format to
- * generate the correct format.
- * @param date Date to parse
- * @return IMF date formated string
- */
-export function toIMF(date: Date): string {
-  function dtPad(v: string, lPad: number = 2): string {
-    return v.padStart(lPad, "0");
-  }
-  const d = dtPad(date.getUTCDate().toString());
-  const h = dtPad(date.getUTCHours().toString());
-  const min = dtPad(date.getUTCMinutes().toString());
-  const s = dtPad(date.getUTCSeconds().toString());
-  const y = date.getUTCFullYear();
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thus", "Fri", "Sat"];
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ];
-  return `${days[date.getUTCDay()]}, ${d} ${
-    months[date.getUTCMonth()]
-  } ${y} ${h}:${min}:${s} GMT`;
+  return `${name}=${value}${stringifiedAttributes}`
 }
