@@ -1,3 +1,5 @@
+import { strict as assert } from 'assert';
+
 export interface Cookie {
   name: string;
   value: string;
@@ -52,17 +54,33 @@ export function stringify(...cookies: Cookie[]) {
       .replace(/[\(\)]/g, escape);
   
     var stringifiedAttributes = '';
-    for (var attributeName in attributes) {
-      if (!attributes[attributeName]) {
+    for (var key in attributes) {
+
+      const value = attributes[key];
+      stringifiedAttributes += '; ';
+      
+      if (!value) {
         continue;
       }
-      stringifiedAttributes += '; ' + attributeName;
-      if (attributes[attributeName] === true) {
+
+      if (key === 'maxAge') {
+        assert(Number.isInteger(value) && value > 0, "Max-Age must be a positive integer")
+        stringifiedAttributes += `Max-Age=${value}`;
         continue;
       }
-  
+
+      if (key === 'httpOnly') {
+        stringifiedAttributes += 'HttpOnly';
+        continue;
+      }
+
+      stringifiedAttributes += key;
+      if (value === true) {
+        continue;
+      }
+
       // Considers RFC 6265 section 5.2
-      stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
+      stringifiedAttributes += '=' + attributes[key].split(';')[0];
     }
 
     return `${name}=${value}${stringifiedAttributes}`;
