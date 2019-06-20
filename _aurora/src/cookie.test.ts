@@ -11,10 +11,10 @@ async function cookieStringifyTest() {
   can be converted to a "set-cookie" compatible value`;
 
   try {
-    const cookie = Cookie.stringify([
+    const cookie = Cookie.stringify(
       { name: 'stomach', value: 'empty' },
       { name: 'mind', value: 'full' },
-    ]);
+    );
     
     assert.equal(cookie, 'stomach=empty; mind=full');
     return true;
@@ -30,10 +30,10 @@ async function cookieStringifyAttributesTest() {
   Arbitrarily`;
 
   try {
-    const cookie = Cookie.stringify([
+    const cookie = Cookie.stringify(
       { name: 'not', value: 'afraid', secure: true },
       { name: 'learning', value: 'sail' },
-    ]);
+    );
     
     assert.equal(cookie, 'not=afraid; secure; learning=sail');
     return true;

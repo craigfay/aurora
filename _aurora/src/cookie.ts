@@ -29,62 +29,43 @@ export function parse(cookies: string): object {
 }
 
 /**
- * Convert the entire Cookie jar to its string form
+ * Stringify an arbitrary amount of cookie objects 
+ * @param cookies
  */
-export function stringify(jar: Cookie[]) {
-  const cookies = jar.map(stringifyOne);
-  return cookies.join('; ');
-}
+export function stringify(...cookies: Cookie[]) {
 
-/**
- * Stringify a single Cookie
- * @param cookie
- */
-function stringifyOne(cookie: Cookie) {
-
-  let { name, value, ...attributes } = cookie;
-
-  if (typeof attributes.expires === 'number') {
-    const expirationString = new Date(+new Date() + attributes.expires * 864e+5);
-  }
-  else if (attributes.expires instanceof Date) {
-    // We're using "expires" because "max-age" is not supported by IE
-    const expirationString = attributes.expires ? attributes.expires.toUTCString() : '';
-  }
-
-  try {
-    var result = JSON.stringify(value);
-    if (/^[\{\[]/.test(result)) {
-      value = result;
+  return cookies.map(cookie => {
+    let { name, value, ...attributes } = cookie;
+  
+    if (typeof attributes.expires === 'number') {
+      const expirationString = new Date(+new Date() + attributes.expires * 864e+5);
+    } else if (attributes.expires instanceof Date) {
+      // We're using "expires" because "max-age" is not supported by IE
+      const expirationString = attributes.expires ? attributes.expires.toUTCString() : '';
     }
-  } catch (e) {}
-
-  value = encodeURIComponent(String(value))
-    .replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
-
-  name = encodeURIComponent(String(name))
-    .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
-    .replace(/[\(\)]/g, escape);
-
-  var stringifiedAttributes = '';
-  for (var attributeName in attributes) {
-    if (!attributes[attributeName]) {
-      continue;
-    }
-    stringifiedAttributes += '; ' + attributeName;
-    if (attributes[attributeName] === true) {
-      continue;
+  
+    value = encodeURIComponent(String(value))
+      .replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+  
+    name = encodeURIComponent(String(name))
+      .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+      .replace(/[\(\)]/g, escape);
+  
+    var stringifiedAttributes = '';
+    for (var attributeName in attributes) {
+      if (!attributes[attributeName]) {
+        continue;
+      }
+      stringifiedAttributes += '; ' + attributeName;
+      if (attributes[attributeName] === true) {
+        continue;
+      }
+  
+      // Considers RFC 6265 section 5.2
+      stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
     }
 
-    // Considers RFC 6265 section 5.2:
-    // ...
-    // 3.  If the remaining unparsed-attributes contains a %x3B (";")
-    //     character:
-    // Consume the characters of the unparsed-attributes up to,
-    // not including, the first %x3B (";") character.
-    // ...
-    stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
-  }
+    return `${name}=${value}${stringifiedAttributes}`;
 
-  return `${name}=${value}${stringifiedAttributes}`
+  }).join('; ');
 }
