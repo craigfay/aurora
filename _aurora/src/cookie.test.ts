@@ -4,6 +4,7 @@ import { strict as assert } from 'assert';
 export const tests = [
   cookieStringifyTest,
   cookieStringifyAttributesTest,
+  cookieExpiresTest,
 ];
 
 async function cookieStringifyTest() {
@@ -63,6 +64,33 @@ async function cookieStringifyAttributesTest() {
         { name: 'towards', value: 'eachother' },
       ),
       'they=seemed; HttpOnly; to=lean; Max-Age=2; towards=eachother'
+    );
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookieExpiresTest() {
+  const description = `The "expires" attribute should
+  accept both Date objects and numbers.`;
+
+  try {
+    assert.equal(
+      Cookie.stringify(
+        { name: 'black', value: 'ominous', expires: new Date(Date.UTC(1994, 10, 1, 17, 36))},
+      ),
+      'black=ominous; Expires=Tue, 01 Nov 1994 17:36:00 GMT'
+    );
+
+    assert.equal(
+      Cookie.stringify(
+        { name: 'fading', value: 'light', expires: new Date(Date.UTC(1975, 8, 6, 5, 20))},
+      ),
+      'fading=light; Expires=Sat, 06 Sep 1975 05:20:00 GMT'
     );
 
     return true;

@@ -57,16 +57,13 @@ export function stringify(...cookies: Cookie[]) {
       }
 
       if (attributeName === 'expires') {
+        // Numbers will be converted into a date N days in the future
         if (typeof attributeValue === 'number') {
-          const dateString = new Date(+new Date() + attributeValue * 864e+5);
-          stringifiedAttributes += `Expires=${dateString}`
-          continue;
-        } else if (attributeValue instanceof Date) {
-          // We're using "expires" because "max-age" is not supported by IE
-          const dateString= attributes.expires ? attributeValue.toUTCString() : '';
-          stringifiedAttributes += `Expires=${dateString}`
-          continue;
+          attributeValue = new Date(+new Date() + attributeValue * 864e+5);
         }
+        assert(attributeValue instanceof Date, "Cookie expiration cannot be converted to a valid Date object")
+        stringifiedAttributes += `Expires=${attributeValue.toUTCString()}`;
+        continue;
       }
 
       if (attributeName === 'maxAge') {
