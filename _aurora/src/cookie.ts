@@ -38,49 +38,55 @@ export function stringify(...cookies: Cookie[]) {
 
   return cookies.map(cookie => {
     let { name, value, ...attributes } = cookie;
-  
-    if (typeof attributes.expires === 'number') {
-      const expirationString = new Date(+new Date() + attributes.expires * 864e+5);
-    } else if (attributes.expires instanceof Date) {
-      // We're using "expires" because "max-age" is not supported by IE
-      const expirationString = attributes.expires ? attributes.expires.toUTCString() : '';
-    }
-  
+
     value = encodeURIComponent(String(value))
       .replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
-  
+
     name = encodeURIComponent(String(name))
       .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
       .replace(/[\(\)]/g, escape);
-  
+
     var stringifiedAttributes = '';
-    for (var key in attributes) {
+    for (const attributeName in attributes) {
 
-      const value = attributes[key];
+      let attributeValue = attributes[attributeName];
       stringifiedAttributes += '; ';
-      
-      if (!value) {
+
+      if (!attributeValue) {
         continue;
       }
 
-      if (key === 'maxAge') {
-        assert(Number.isInteger(value) && value > 0, "Max-Age must be a positive integer")
-        stringifiedAttributes += `Max-Age=${value}`;
+      if (attributeName === 'expires') {
+        if (typeof attributeValue === 'number') {
+          const dateString = new Date(+new Date() + attributeValue * 864e+5);
+          stringifiedAttributes += `Expires=${dateString}`
+          continue;
+        } else if (attributeValue instanceof Date) {
+          // We're using "expires" because "max-age" is not supported by IE
+          const dateString= attributes.expires ? attributeValue.toUTCString() : '';
+          stringifiedAttributes += `Expires=${dateString}`
+          continue;
+        }
+      }
+
+      if (attributeName === 'maxAge') {
+        assert(Number.isInteger(attributeValue) && attributeValue > 0, "Max-Age must be a positive integer")
+        stringifiedAttributes += `Max-Age=${attributeValue}`;
         continue;
       }
 
-      if (key === 'httpOnly') {
+      if (attributeName === 'httpOnly') {
         stringifiedAttributes += 'HttpOnly';
         continue;
       }
 
-      stringifiedAttributes += key;
-      if (value === true) {
+      stringifiedAttributes += attributeName;
+      if (attributeValue === true) {
         continue;
       }
 
       // Considers RFC 6265 section 5.2
-      stringifiedAttributes += '=' + attributes[key].split(';')[0];
+      stringifiedAttributes += '=' + attributeValue.split(';')[0];
     }
 
     return `${name}=${value}${stringifiedAttributes}`;
