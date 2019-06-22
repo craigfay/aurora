@@ -4,7 +4,7 @@
   "repository": "https://github.com/craigfay/aurora",
   "private": true,
   "scripts": {
-    "start": "node app/http/server.js",
+    "start": "nodemon app/http/server.js",
     "build": "npx tsc",
     "test": "npm run build && node _core/dist/test",
     "watch": "npx tsc-watch --onSuccess \"npm run start\""
@@ -14,11 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^11.11.6",
-    "chai": "4.1.1",
-    "chai-http": "^3.0.0",
-    "mocha": "3.5.0",
     "nodemon": "^1.19.1",
-    "sinon": "^4.1.5",
     "typescript": "^3.5.1",
     "typescript-tools": "^0.3.1",
     "tsc-watch": "^2.2.1"
