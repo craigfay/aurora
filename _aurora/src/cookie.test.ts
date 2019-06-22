@@ -88,9 +88,9 @@ async function cookieExpiresTest() {
 
     assert.equal(
       Cookie.stringify(
-        { name: 'fading', value: 'light', expires: new Date(Date.UTC(1975, 8, 6, 5, 20))},
+        { name: 'fading', value: 'light', expires: new Date(Date.UTC(1960, 8, 6, 5, 20))},
       ),
-      'fading=light; Expires=Sat, 06 Sep 1975 05:20:00 GMT'
+      'fading=light; Expires=Tue, 06 Sep 1960 05:20:00 GMT'
     );
 
     assert.equal(
@@ -99,6 +99,11 @@ async function cookieExpiresTest() {
       ),
       'vast=silence; Expires=Mon, 20 Mar 2056 17:05:00 GMT'
     );
+
+    assert(Cookie.stringify({ name: 'reigned', value: 'over', expires: 3 }));
+    assert(Cookie.stringify({ name: 'the', value: 'land', expires: -5 }));
+    assert(Cookie.stringify({ name: 'the', value: 'land', expires: 0 }));
+    assert(Cookie.stringify({ name: 'itself', value: 'was', expires: .5 }));
 
     return true;
 
