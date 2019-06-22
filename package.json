@@ -6,7 +6,7 @@
   "scripts": {
     "start": "",
     "build": "npx tsc",
-    "test": "npm run build && node _aurora/dist/test",
+    "test": "npm run build && node _core/dist/test",
     "watch": "npx tsc-watch --onSuccess \"npm run start\""
   },
   "keywords": [],

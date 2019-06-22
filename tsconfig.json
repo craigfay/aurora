@@ -2,11 +2,11 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "outDir": "./_aurora/dist",
+    "outDir": "_core/dist",
     "sourceMap": true,
   },
   "include": [
-    "_aurora/src/**/*.ts"
+    "_core/src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
