@@ -1,5 +1,9 @@
 # Restful API with Koa, Passport, Redis, and Postgres
 
+## Docker Commands
+* Build image `docker-compose build`
+* Start image as container `docker-compose up`
+
 ## PSQL Commands
 * list databases `\l`
 * create database: `CREATE DATABASE koa_api;`
