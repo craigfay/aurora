@@ -3,7 +3,7 @@ import { strict as assert } from 'assert';
 
 export const tests = [
   cookieStringifyTest,
-  cookieStringifyAttributesTest,
+  cookieSecureTest,
   cookieExpiresTest,
 ];
 
@@ -44,9 +44,9 @@ async function cookieStringifyTest() {
   }
 }
 
-async function cookieStringifyAttributesTest() {
-  const description = `Attributes should be stringified
-  Arbitrarily`;
+async function cookieSecureTest() {
+  const description = `The "Secure" attribute
+  should accept any truthy value`;
 
   try {
     assert.equal(
@@ -59,11 +59,11 @@ async function cookieStringifyAttributesTest() {
 
     assert.equal(
       Cookie.stringify(
-        { name: 'they', value: 'seemed', httpOnly: true },
-        { name: 'to', value: 'lean', maxAge: 2 },
-        { name: 'towards', value: 'eachother' },
+        { name: 'they', value: 'seemed', secure: true },
+        { name: 'to', value: 'lean' },
+        { name: 'towards', value: 'eachother', secure: true },
       ),
-      'they=seemed; HttpOnly; to=lean; Max-Age=2; towards=eachother'
+      'they=seemed; Secure; to=lean; towards=eachother; Secure'
     );
 
     return true;
