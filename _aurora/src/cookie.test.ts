@@ -93,6 +93,13 @@ async function cookieExpiresTest() {
       'fading=light; Expires=Sat, 06 Sep 1975 05:20:00 GMT'
     );
 
+    assert.equal(
+      Cookie.stringify(
+        { name: 'vast', value: 'silence', expires: new Date(Date.UTC(2056, 2, 20, 17, 5))},
+      ),
+      'vast=silence; Expires=Mon, 20 Mar 2056 17:05:00 GMT'
+    );
+
     return true;
 
   } catch (e) {
