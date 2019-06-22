@@ -6,6 +6,7 @@ export const tests = [
   cookieSecureTest,
   cookieHttpOnlyTest,
   cookieMaxAgeTest,
+  cookieDomainTest,
   cookieExpiresTest,
 ];
 
@@ -133,6 +134,28 @@ async function cookieMaxAgeTest() {
       decimalMaxAge,
       { message: "Max-Age must be a positive integer" }
     )
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookieDomainTest() {
+  const description = `"domain" attribute
+  should accept string values`;
+
+  try {
+    assert.equal(
+      Cookie.stringify(
+        { name: 'there', value: 'was', domain: 'website.com' },
+        { name: 'a', value: 'hint' },
+        { name: 'of', value: 'laughter', domain: 'service.com' },
+      ),
+      'there=was; Domain=website.com; a=hint; of=laughter; Domain=service.com'
+    );
 
     return true;
 
