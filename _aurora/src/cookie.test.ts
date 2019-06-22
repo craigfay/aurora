@@ -4,6 +4,7 @@ import { strict as assert } from 'assert';
 export const tests = [
   cookieStringifyTest,
   cookieSecureTest,
+  cookieHttpOnlyTest,
   cookieExpiresTest,
 ];
 
@@ -46,7 +47,7 @@ async function cookieStringifyTest() {
 
 async function cookieSecureTest() {
   const description = `The "Secure" attribute
-  should accept any truthy value`;
+  should accept truthy values`;
 
   try {
     assert.equal(
@@ -57,13 +58,26 @@ async function cookieSecureTest() {
       'white=covering; Secure; of=frost'
     );
 
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookieHttpOnlyTest() {
+  const description = `The "httpOnly" attribute
+  should accept truthy values`;
+
+  try {
     assert.equal(
       Cookie.stringify(
-        { name: 'they', value: 'seemed', secure: true },
+        { name: 'they', value: 'seemed', httpOnly: true },
         { name: 'to', value: 'lean' },
-        { name: 'towards', value: 'eachother', secure: true },
+        { name: 'towards', value: 'eachother', httpOnly: true },
       ),
-      'they=seemed; Secure; to=lean; towards=eachother; Secure'
+      'they=seemed; HttpOnly; to=lean; towards=eachother; HttpOnly'
     );
 
     return true;
