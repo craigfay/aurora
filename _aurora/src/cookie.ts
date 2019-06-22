@@ -37,12 +37,10 @@ export function parse(cookies: string): object {
 export function stringify(...cookies: Cookie[]) {
 
   return cookies.map(cookie => {
-    let { name, value } = cookie;
-
-    value = encodeURIComponent(String(value))
+    const value = encodeURIComponent(String(cookie.value))
       .replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
 
-    name = encodeURIComponent(String(name))
+    const name = encodeURIComponent(String(cookie.name))
       .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
       .replace(/[\(\)]/g, escape);
 
