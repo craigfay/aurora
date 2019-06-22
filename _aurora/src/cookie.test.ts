@@ -54,7 +54,7 @@ async function cookieStringifyAttributesTest() {
         { name: 'white', value: 'covering', secure: true },
         { name: 'of', value: 'frost' },
       ),
-      'white=covering; secure; of=frost'
+      'white=covering; Secure; of=frost'
     );
 
     assert.equal(

@@ -37,7 +37,7 @@ export function parse(cookies: string): object {
 export function stringify(...cookies: Cookie[]) {
 
   return cookies.map(cookie => {
-    let { name, value, ...attributes } = cookie;
+    let { name, value } = cookie;
 
     value = encodeURIComponent(String(value))
       .replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
@@ -46,46 +46,40 @@ export function stringify(...cookies: Cookie[]) {
       .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
       .replace(/[\(\)]/g, escape);
 
-    var stringifiedAttributes = '';
-    for (const attributeName in attributes) {
+    let out = [`${name}=${value}`];
 
-      let attributeValue = attributes[attributeName];
-
-      if (false === attributeValue) {
-        continue;
+    if (cookie.secure) {
+      out.push("Secure");
+    }
+    if (cookie.httpOnly) {
+      out.push("HttpOnly");
+    }
+    if (Number.isInteger(cookie.maxAge!)) {
+      assert(cookie.maxAge! > 0, "Max-Age must be a positive integer");
+      out.push(`Max-Age=${cookie.maxAge}`);
+    }
+    if (cookie.domain) {
+      out.push(`Domain=${cookie.domain}`);
+    }
+    if (cookie.sameSite) {
+      out.push(`SameSite=${cookie.sameSite}`);
+    }
+    if (cookie.path) {
+      out.push(`Path=${cookie.path}`);
+    }
+    if (cookie.expires) {
+      // Numbers will be converted into a date N days in the future
+      if (typeof cookie.expires === 'number') {
+        cookie.expires = new Date(+new Date() + cookie.expires * 864e+5);
       }
-
-      if (attributeName === 'expires') {
-        // Numbers will be converted into a date N days in the future
-        if (typeof attributeValue === 'number') {
-          attributeValue = new Date(+new Date() + attributeValue * 864e+5);
-        }
-        assert(attributeValue instanceof Date, "Cookie expiration cannot be converted to a valid Date object")
-        stringifiedAttributes += `; Expires=${attributeValue.toUTCString()}`;
-        continue;
-      }
-
-      if (attributeName === 'maxAge') {
-        assert(Number.isInteger(attributeValue) && attributeValue > 0, "Max-Age must be a positive integer")
-        stringifiedAttributes += `; Max-Age=${attributeValue}`;
-        continue;
-      }
-
-      if (attributeName === 'httpOnly') {
-        stringifiedAttributes += '; HttpOnly';
-        continue;
-      }
-
-      if (attributeValue === true) {
-        stringifiedAttributes += '; ' + attributeName;
-        continue;
-      }
-
-      // Considers RFC 6265 section 5.2
-      stringifiedAttributes += '=' + attributeValue.split(';')[0];
+      assert(cookie.expires instanceof Date, "Cookie expiration cannot be converted to a valid Date object")
+      out.push(`Expires=${cookie.expires.toUTCString()}`);
+    }
+    if (cookie.unparsed) {
+      out.push(cookie.unparsed.join("; "));
     }
 
-    return `${name}=${value}${stringifiedAttributes}`;
+    return out.join("; ");
 
   }).join('; ');
 }
