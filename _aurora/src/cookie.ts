@@ -50,9 +50,8 @@ export function stringify(...cookies: Cookie[]) {
     for (const attributeName in attributes) {
 
       let attributeValue = attributes[attributeName];
-      stringifiedAttributes += '; ';
 
-      if (!attributeValue) {
+      if (false === attributeValue) {
         continue;
       }
 
@@ -62,23 +61,23 @@ export function stringify(...cookies: Cookie[]) {
           attributeValue = new Date(+new Date() + attributeValue * 864e+5);
         }
         assert(attributeValue instanceof Date, "Cookie expiration cannot be converted to a valid Date object")
-        stringifiedAttributes += `Expires=${attributeValue.toUTCString()}`;
+        stringifiedAttributes += `; Expires=${attributeValue.toUTCString()}`;
         continue;
       }
 
       if (attributeName === 'maxAge') {
         assert(Number.isInteger(attributeValue) && attributeValue > 0, "Max-Age must be a positive integer")
-        stringifiedAttributes += `Max-Age=${attributeValue}`;
+        stringifiedAttributes += `; Max-Age=${attributeValue}`;
         continue;
       }
 
       if (attributeName === 'httpOnly') {
-        stringifiedAttributes += 'HttpOnly';
+        stringifiedAttributes += '; HttpOnly';
         continue;
       }
 
-      stringifiedAttributes += attributeName;
       if (attributeValue === true) {
+        stringifiedAttributes += '; ' + attributeName;
         continue;
       }
 
