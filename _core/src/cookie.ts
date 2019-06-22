@@ -57,12 +57,15 @@ export function stringify(...cookies: Cookie[]) {
       out.push(`Max-Age=${cookie.maxAge}`);
     }
     if (cookie.domain) {
+      assert(typeof cookie.domain == 'string', 'Domain must be of type String');
       out.push(`Domain=${cookie.domain}`);
     }
     if (cookie.sameSite) {
+      assert(typeof cookie.sameSite == 'string', 'sameSite must be of type String');
       out.push(`SameSite=${cookie.sameSite}`);
     }
     if (cookie.path) {
+      assert(typeof cookie.path == 'string', 'Path must be of type String');
       out.push(`Path=${cookie.path}`);
     }
     if (cookie.expires) {

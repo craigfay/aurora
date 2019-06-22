@@ -7,6 +7,8 @@ export const tests = [
   cookieHttpOnlyTest,
   cookieMaxAgeTest,
   cookieDomainTest,
+  cookieSameSiteTest,
+  cookiePathTest,
   cookieExpiresTest,
 ];
 
@@ -155,6 +157,55 @@ async function cookieDomainTest() {
         { name: 'of', value: 'laughter', domain: 'service.com' },
       ),
       'there=was; Domain=website.com; a=hint; of=laughter; Domain=service.com'
+    );
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookieSameSiteTest() {
+  const description = `"sameSite" attribute
+  should accept string values`;
+
+  try {
+    assert.equal(
+      Cookie.stringify(
+        { name: 'but', value: 'a', sameSite: 'Strict' },
+        { name: 'laughter', value: 'that', sameSite: 'Lax' },
+      ),
+      'but=a; SameSite=Strict; laughter=that; SameSite=Lax'
+    );
+
+    assert.equal(
+      Cookie.stringify(
+        // @ts-ignore
+        { name: 'was', value: 'more', sameSite: 'Terrible' },
+      ),
+      'was=more; SameSite=Terrible'
+    );
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookiePathTest() {
+  const description = `"path" attribute
+  should accept string values`;
+
+  try {
+    assert.equal(
+      Cookie.stringify(
+        { name: 'than', value: 'any', path: 'sadness' },
+      ),
+      'than=any; Path=sadness'
     );
 
     return true;
