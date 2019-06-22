@@ -5,6 +5,7 @@ export const tests = [
   cookieStringifyTest,
   cookieSecureTest,
   cookieHttpOnlyTest,
+  cookieMaxAgeTest,
   cookieExpiresTest,
 ];
 
@@ -75,10 +76,63 @@ async function cookieHttpOnlyTest() {
       Cookie.stringify(
         { name: 'they', value: 'seemed', httpOnly: true },
         { name: 'to', value: 'lean' },
-        { name: 'towards', value: 'eachother', httpOnly: true },
+        // @ts-ignore
+        { name: 'towards', value: 'eachother', httpOnly: 'sure' },
       ),
       'they=seemed; HttpOnly; to=lean; towards=eachother; HttpOnly'
     );
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookieMaxAgeTest() {
+  const description = `The "maxAge" attribute
+  should accept positive integer values`;
+
+  try {
+    assert.equal(
+      Cookie.stringify(
+        { name: 'desolation', value: 'lifeless', maxAge: 2 },
+        { name: 'without', value: 'movement' },
+      ),
+      'desolation=lifeless; Max-Age=2; without=movement'
+    );
+
+    assert.equal(
+      Cookie.stringify(
+        // @ts-ignore
+        { name: 'not', value: 'even', maxAge: 'non-number' },
+      ),
+      'not=even'
+    );
+
+    const zeroMaxAge= () => {
+      Cookie.stringify({ name: 'so', value: 'lone', maxAge: 0 })
+    }
+    const negativeMaxAge= () => {
+      Cookie.stringify({ name: 'and', value: 'cold', maxAge: -3 })
+    }
+    const decimalMaxAge= () => {
+      Cookie.stringify({ name: 'the', value: 'spirit', maxAge: .5 })
+    }
+
+    assert.throws(
+      zeroMaxAge,
+      { message: "Max-Age must be a positive integer" }
+    )
+    assert.throws(
+      negativeMaxAge,
+      { message: "Max-Age must be a positive integer" }
+    )
+    assert.throws(
+      decimalMaxAge,
+      { message: "Max-Age must be a positive integer" }
+    )
 
     return true;
 

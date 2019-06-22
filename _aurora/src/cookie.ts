@@ -52,8 +52,8 @@ export function stringify(...cookies: Cookie[]) {
     if (cookie.httpOnly) {
       out.push("HttpOnly");
     }
-    if (Number.isInteger(cookie.maxAge!)) {
-      assert(cookie.maxAge! > 0, "Max-Age must be a positive integer");
+    if (typeof cookie.maxAge == 'number') {
+      assert(Number.isInteger(cookie.maxAge) && cookie.maxAge > 0, "Max-Age must be a positive integer");
       out.push(`Max-Age=${cookie.maxAge}`);
     }
     if (cookie.domain) {
