@@ -21,11 +21,13 @@ export type SameSite = "Strict" | "Lax";
  */
 export function parse(cookies: string): object {
   const out = {};
-  const c = cookies!.split(";");
-  for (const kv of c) {
-    const cookieVal = kv.split("=");
-    const key = cookieVal.shift()!.trim();
-    out[key] = cookieVal.join("=");
+  if (typeof cookies === 'string') {
+    const c = cookies!.split(";");
+    for (const kv of c) {
+      const cookieVal = kv.split("=");
+      const key = cookieVal.shift()!.trim();
+      out[key] = cookieVal.join("=");
+    }
   }
   return out;
 }

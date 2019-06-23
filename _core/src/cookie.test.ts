@@ -10,6 +10,7 @@ export const tests = [
   cookieSameSiteTest,
   cookiePathTest,
   cookieExpiresTest,
+  cookieNonStringParseTest,
 ];
 
 async function cookieStringifyTest() {
@@ -247,6 +248,36 @@ async function cookieExpiresTest() {
     assert(Cookie.stringify({ name: 'the', value: 'land', expires: 0 }));
     assert(Cookie.stringify({ name: 'itself', value: 'was', expires: .5 }));
 
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookieNonStringParseTest() {
+  const description = `non-string cookie headers
+  return empty objects`;
+
+  try {
+    assert.deepEqual(
+      Cookie.parse(undefined),
+      {},
+    );
+
+    assert.deepEqual(
+      // @ts-ignore
+      Cookie.parse({}),
+      {},
+    );
+
+    assert.deepEqual(
+      // @ts-ignore
+      Cookie.parse(true),
+      {},
+    );
+    
     return true;
 
   } catch (e) {
