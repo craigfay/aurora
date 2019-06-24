@@ -1,5 +1,7 @@
 import * as Cookie from './cookie';
 import { strict as assert } from 'assert';
+import { HttpServer, HttpResponse } from './server'
+import * as fetch from 'node-fetch'
 
 export const tests = [
   cookieStringifyTest,
@@ -11,6 +13,7 @@ export const tests = [
   cookiePathTest,
   cookieExpiresTest,
   cookieNonStringParseTest,
+  cookieApplicationTest,
 ];
 
 async function cookieStringifyTest() {
@@ -278,6 +281,37 @@ async function cookieNonStringParseTest() {
       {},
     );
     
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function cookieApplicationTest() {
+  const description = `Cookie.stringify() can be
+  use to create "set-cookie" header values`;
+
+  try {
+    // Start up an http server
+    const requests = new HttpServer({ port: 0 });
+    requests.route('GET', '/', (request, meta) => {
+      const cookie = Cookie.stringify({
+        name: 'incommunicable', value: 'wisdom'
+      });
+
+      return new HttpResponse({
+        headers: { 'set-cookie': cookie }
+      });
+    });
+
+    await requests.listen();
+
+    const res = await fetch(`http://0.0.0.0:${requests.port()}`);
+    assert.equal(res.headers.get('set-cookie'), 'incommunicable=wisdom');
+    await requests.close();
+
     return true;
 
   } catch (e) {
