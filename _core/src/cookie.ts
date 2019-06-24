@@ -46,6 +46,16 @@ export function stringify(...cookies: Cookie[]) {
       .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
       .replace(/[\(\)]/g, escape);
 
+    // ref: https://tools.ietf.org/html/draft-ietf-httpbis-cookie-prefixes-00#section-3.1
+    if (name.startsWith("__Secure")) {
+      cookie.secure = true;
+    }
+    if (name.startsWith("__Host")) {
+      cookie.path = "/";
+      cookie.secure = true;
+      delete cookie.domain;
+    }
+
     let out = [`${name}=${value}`];
 
     if (cookie.secure) {
