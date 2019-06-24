@@ -3,6 +3,7 @@ import * as bodyParser from 'koa-bodyparser';
 import * as KoaRouter from 'koa-router';
 import * as cors from '@koa/cors';
 import * as staticFiles from 'koa-static';
+import { AddressInfo } from 'net'; 
 
 import {
   HttpServerInterface,
@@ -16,13 +17,17 @@ import {
 import { Server } from 'https';
 
 export class HttpServer implements HttpServerInterface {
-  router: any;
   options: HttpServerOptionsInterface;
-  service: Server;
+  private router: any;
+  private service: Server;
 
   constructor(options: HttpServerOptionsInterface) {
     this.options = options;
     this.router = new KoaRouter();
+  }
+
+  port() {
+    return (<AddressInfo>this.service.address()).port || undefined;
   }
 
   route(method:string, path:string, handler: RequestHandlerType) {

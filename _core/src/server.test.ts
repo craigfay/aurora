@@ -3,11 +3,30 @@ import { HttpServer, HttpResponse } from './server'
 import * as fetch from 'node-fetch';
 
 export const tests = [
+  portZeroTest,
   defaultHeadersTest,
   handlerMetaTest,
   illegalRouteMethods,
   responseConstructor,
 ];
+
+async function portZeroTest() {
+  const description = `port 0 can be used to
+  guarantee an available port`;
+
+  try {
+    const requests = new HttpServer({ port: 0 });
+    await requests.listen();
+    assert(requests.port());
+    await requests.close();
+
+    return true;
+
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
 
 async function defaultHeadersTest() {
   const description = `Server responses should specify certain
@@ -15,7 +34,7 @@ async function defaultHeadersTest() {
 
   try {
     // Start up an http server
-    const requests = new HttpServer({ port: 8000 });
+    const requests = new HttpServer({ port: 0 });
     requests.route('GET', '/', (request, meta) => {
       return {
         status: 200,
@@ -26,7 +45,7 @@ async function defaultHeadersTest() {
     await requests.listen();
     
     // Make A request to the server defined above
-    const res = await fetch('http://0.0.0.0:8000');
+    const res = await fetch(`http://0.0.0.0:${requests.port()}`);
     assert.equal(res.status, 200);
     const { length } = Object.keys(res.headers.raw());
     assert.equal(length, 5);
@@ -50,7 +69,7 @@ async function handlerMetaTest() {
 
   try {
     // Start up an http server
-    const requests = new HttpServer({ port: 8001 });
+    const requests = new HttpServer({ port: 0 });
     requests.route('GET', '/', (request, meta) => {
       meta.desire = 'love';
     })
@@ -64,7 +83,7 @@ async function handlerMetaTest() {
     await requests.listen();
     
     // Make A request to the server defined above
-    const res = await fetch('http://0.0.0.0:8001');
+    const res = await fetch(`http://0.0.0.0:${requests.port()}`);
     assert.equal(res.status, 200);
     assert.equal(await res.text(), 'Wilber didn\'t want food. He wanted love');
     await requests.close();
@@ -83,7 +102,7 @@ async function illegalRouteMethods() {
 
   try {
     const registerIllegalRoute = () => {
-      const requests = new HttpServer({ port: 8002 });
+      const requests = new HttpServer({ port: 0 });
       requests.route('SAVE', '/', (request, meta) => {
         return new HttpResponse();
       })
@@ -106,7 +125,7 @@ async function responseConstructor() {
 
   try {
     // Start up an http server
-    const requests = new HttpServer({ port: 8003 });
+    const requests = new HttpServer({ port: 0 });
     requests.route('GET', '/', (request, meta) => {
       return new HttpResponse();
     })
