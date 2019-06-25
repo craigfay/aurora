@@ -45,11 +45,8 @@ async function cookieStringifyTest() {
       'forest=waterway; trees=stripped; recent=wind'
     );
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -66,11 +63,8 @@ async function cookieSecureTest() {
       'white=covering; Secure; of=frost'
     );
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -89,11 +83,8 @@ async function cookieHttpOnlyTest() {
       'they=seemed; HttpOnly; to=lean; towards=eachother; HttpOnly'
     );
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -141,11 +132,8 @@ async function cookieMaxAgeTest() {
       { message: "Max-Age must be a positive integer" }
     )
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -163,11 +151,8 @@ async function cookieDomainTest() {
       'there=was; Domain=website.com; a=hint; of=laughter; Domain=service.com'
     );
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -192,11 +177,8 @@ async function cookieSameSiteTest() {
       'was=more; SameSite=Terrible'
     );
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -212,11 +194,8 @@ async function cookiePathTest() {
       'than=any; Path=sadness'
     );
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -251,11 +230,8 @@ async function cookieExpiresTest() {
     assert(Cookie.stringify({ name: 'the', value: 'land', expires: 0 }));
     assert(Cookie.stringify({ name: 'itself', value: 'was', expires: .5 }));
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -281,11 +257,8 @@ async function cookieNonStringParseTest() {
       {},
     );
     
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -312,10 +285,7 @@ async function cookieApplicationTest() {
     assert.equal(res.headers.get('set-cookie'), 'incommunicable=wisdom');
     await requests.close();
 
-    return true;
-
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }

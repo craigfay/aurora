@@ -23,8 +23,7 @@ async function portZeroTest() {
     return true;
 
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -55,11 +54,9 @@ async function defaultHeadersTest() {
     assert.equal(res.headers.get('connection'), 'close');
     assert.equal(res.headers.get('content-length'), '0');
     await requests.close();
-    return true;
 
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -87,12 +84,10 @@ async function handlerMetaTest() {
     assert.equal(res.status, 200);
     assert.equal(await res.text(), 'Wilber didn\'t want food. He wanted love');
     await requests.close();
-    return true;
   }
 
   catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -113,8 +108,7 @@ async function illegalRouteMethods() {
     })
       
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
 
@@ -132,10 +126,8 @@ async function responseConstructor() {
 
     await requests.listen();
     await requests.close();
-    return true;
 
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 }
