@@ -25,61 +25,46 @@ services:
       timeout: 30s
       retries: 3
 
-  node:
-    container_name: webserver
-    # the directory path - relative to this compose file - where
-    # we'll be able to find the Dockerfile
+  # An alias for common properties of multiple services
+  node_base: &node_base
+    container_name: node_base
     build: ./
-    # the port mappings we do so that traffic that docker
-    # will forward from localhost -> container
-    ports:
-      - "4000:4000"
-      - "9229:9229"
-    # tell docker compose to watch ./server.js - the path relative
-    # to our compose file on our computer - and then make that reflect
-    # the same file at /usr/src/app/server.js inside of the container
-    volumes:
-      - "./:/usr/src/app"
     links:
       - "postgres"
       - "redis"
+    volumes:
+      - "./:/usr/src/app"
     environment:
-      DB_HOST: &db_host postgres://postgres:password@postgres/primary_db
-      TEST_DB_HOST: &test_db_host postgres://postgres:password@postgres/test_db
+      DB_HOST: postgres://postgres:password@postgres/primary_db
+      TEST_DB_HOST: postgres://postgres:password@postgres/test_db
       REDIS_HOST: redis://cache
       REDIS_PORT: 6379
-    command: [ "npx", "knex", "migrate:latest" ]
-    command: [ "npx", "knex", "seed:run", "--env", "development" ]
-    command: [ "npm", "run", "watch" ]
-    depends_on:
-      - migration
-      - seed
 
+  # Run postgres migrations
   migration:
+    <<: *node_base
     container_name: migration
-    build: ./
-    environment:
-      DB_HOST: *db_host
-      TEST_DB_HOST: *test_db_host
     command: [ "npx", "knex", "migrate:latest" ]
     depends_on:
       postgres:
         condition: service_healthy
-    links:
-      - "postgres"
-    volumes:
-      - "./:/usr/src/app"
 
+  # Run postgres seeding
   seed:
+    <<: *node_base
     container_name: seed
-    build: ./
-    environment:
-      DB_HOST: *db_host
-      TEST_DB_HOST: *test_db_host
     command: [ "npx", "knex", "seed:run", "--env", "development" ]
     depends_on:
       - migration
-    links:
-      - "postgres"
-    volumes:
-      - "./:/usr/src/app"
+
+  # Primary Application Entrypoint
+  webserver:
+    <<: *node_base
+    container_name: webserver
+    ports:
+      - "4000:4000"
+      - "9229:9229"
+    command: [ "npm", "run", "watch" ]
+    depends_on:
+      - migration
+      - seed
