@@ -22,6 +22,8 @@ Resources:
 
 * [Migrations with Docker](https://stackoverflow.com/questions/33992867/how-do-you-perform-django-database-migrations-when-using-docker-compose)
 
+* [How is Docker Different from a VM?](https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine?rq=1)
+
 ## Todo
 * Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
 * Have a more thoughtfull directory structure for the volumes in Docker

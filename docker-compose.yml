@@ -50,12 +50,39 @@ services:
       TEST_DB_HOST: postgres://postgres:password@postgres/test_db
       REDIS_HOST: redis://cache
       REDIS_PORT: 6379
+    command: [ "npx", "knex", "migrate:latest" ]
+    command: [ "npx", "knex", "seed:run", "--env", "development" ]
+    command: [ "npm", "run", "watch" ]
+    depends_on:
+      - migration
+      - seed
+
+  migration:
+    container_name: migration
+    build: ./
+    environment:
+      DB_HOST: postgres://postgres:password@postgres/primary_db
+      TEST_DB_HOST: postgres://postgres:password@postgres/test_d
+    command: [ "npx", "knex", "migrate:latest" ]
     depends_on:
       postgres:
-        # we provide a condition - either service_started or service_healthy
-        # as the value. If we say service_started, then if docker was able to
-        # build the image and just start a container instance then we'll move on.
-        # 
-        # Another option is service_healthy which requires that a healthcheck
-        # property is configured above
-        condition: service_started
+        condition: service_healthy
+    links:
+      - "postgres"
+    volumes:
+      - "./:/usr/src/app"
+
+  seed:
+    container_name: seed
+    build: ./
+    environment:
+      DB_HOST: postgres://postgres:password@postgres/primary_db
+      TEST_DB_HOST: postgres://postgres:password@postgres/test_d
+    command: [ "npx", "knex", "seed:run", "--env", "development" ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - "postgres"
+    volumes:
+      - "./:/usr/src/app"
