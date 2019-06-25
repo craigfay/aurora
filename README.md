@@ -20,5 +20,15 @@ Resources:
 
 * [API testing with Jest](https://hackernoon.com/api-testing-with-jest-d1ab74005c0a)
 
+* [Migrations with Docker](https://stackoverflow.com/questions/33992867/how-do-you-perform-django-database-migrations-when-using-docker-compose)
+
 ## Todo
-Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
+* Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
+* Have a more thoughtfull directory structure for the volumes in Docker
+
+## Unanswered Questions
+* How can database content be persistent accross image/container destruction?
+* When is database content destroyed, and where is it contained?
+* How and when should migration/seeding be performed?
+* What's the best way to dependency-invert knex?
+* What tools are available for automated semantic versioning?
