@@ -20,9 +20,3 @@ EXPOSE 4000
 # Expose port 9229 inside the container to allow attaching to
 # the nodejs process for setting debug breakpoints
 EXPOSE 9229
-
-# the command line to run when the container is started
-# TODO make sure migrations run before `npm start`
-CMD [ "npx", "knex", "migrate:latest" ]
-CMD ["knex" "seed:run" "--env development" ]
-CMD [ "npm", "run", "watch" ]
