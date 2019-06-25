@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+const { URLSearchParams } = require('url');
 import { HttpServer, HttpResponse } from './server'
 import * as fetch from 'node-fetch';
 
@@ -8,6 +9,7 @@ export const tests = [
   handlerMetaTest,
   illegalRouteMethods,
   responseConstructor,
+  requestBodyParserURLencoded,
 ];
 
 async function portZeroTest() {
@@ -125,6 +127,42 @@ async function responseConstructor() {
     })
 
     await requests.listen();
+    await requests.close();
+
+  } catch (e) {
+    return e;
+  }
+}
+
+async function requestBodyParserURLencoded() {
+  const description = `URL encoded body content
+  will be parsed into an object`;
+
+  try {
+    const requests = new HttpServer({ port: 0 });
+    requests.route('POST', '/', (req, meta) => {
+
+      assert.equal(
+        typeof req.body,
+        'object'
+      );
+
+      assert.deepEqual(
+        { name: 'charlotte' },
+        req.body,
+      );
+
+    })
+
+    await requests.listen();
+
+    const params = new URLSearchParams();
+    params.append('name', 'charlotte');
+    const res = await fetch(`http://0.0.0.0:${requests.port()}`, {
+      method: 'POST',
+      body: params,
+    });
+
     await requests.close();
 
   } catch (e) {
