@@ -30,7 +30,7 @@ export class HttpServer implements HttpServerInterface {
     return (<AddressInfo>this.service.address()).port || undefined;
   }
 
-  route(method:string, path:string, handler: RequestHandlerType) {
+  route(method:string, path:string, handler:RequestHandlerType) {
     const verb = method.toLowerCase();
     if ('function' !== typeof this.router[verb]) {
       throw new Error(`Unsupported verb "${method}".`);
@@ -90,8 +90,9 @@ function adaptRequest(ctx): HttpRequestInterface {
     method,
     url,
     headers, 
-    body,
   } = ctx;
+
+  const { body } = ctx.request;
   
   return Object.freeze({
     method,

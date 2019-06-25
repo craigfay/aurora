@@ -5,5 +5,5 @@ module.exports = { sessionCreation };
 
 async function sessionCreation(key) {
   let sessionId = crypto.randomBytes(32).toString("hex");
-  if ('OK' == await set(sessionId, 'generic')) return sessionId;
+  if ('OK' == await set(sessionId, key)) return sessionId;
 }

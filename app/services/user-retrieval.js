@@ -1,16 +1,12 @@
 const knex = require('../db/connection');
 
-module.exports = { userRetrieval };
+module.exports = {
+  userRetrieval,
+};
 
-async function userRetrieval() {
-  return await knex('users').select('*');
+async function userRetrieval(descriptors) {
+  return await knex('users').select('*').where(descriptors);
 }
-
-// function getSingleUser(id) {
-//   return knex('users')
-//   .select('*')
-//   .where({ id: parseInt(id) });
-// }
 
 // function addUser(user) {
 //   const salt = bcrypt.genSaltSync();
