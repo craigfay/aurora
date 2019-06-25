@@ -3,6 +3,7 @@
 ## Docker Commands
 * Build image `docker-compose build`
 * Start image as container `docker-compose up`
+* Run psql inside the postgres container `docker exec -it database psql -U postgres`
 
 ## PSQL Commands
 * list databases `\l`
