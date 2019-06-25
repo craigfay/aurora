@@ -1,5 +1,3 @@
-# Restful API with Koa, Passport, Redis, and Postgres
-
 ## Docker Commands
 * Build image `docker-compose build`
 * Start image as container `docker-compose up`
