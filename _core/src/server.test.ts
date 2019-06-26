@@ -9,7 +9,8 @@ export const tests = [
   handlerMetaTest,
   illegalRouteMethods,
   responseConstructor,
-  requestBodyParser,
+  requestBodyParserURLencoded,
+  requestBodyParserJSON,
 ];
 
 async function portZeroTest() {
@@ -134,40 +135,68 @@ async function responseConstructor() {
   }
 }
 
-async function requestBodyParser() {
-  const description = `All parse-able request bodies
-  will be type string`;
+async function requestBodyParserURLencoded() {
+  const description = `URL encoded body content
+  will be parsed into an object`;
 
   try {
     const requests = new HttpServer({ port: 0 });
     requests.route('POST', '/', (req, meta) => {
+
       assert.equal(
         typeof req.body,
-        'string'
+        'object'
       );
+
+      assert.deepEqual(
+        { name: 'charlotte' },
+        req.body,
+      );
+
     })
 
     await requests.listen();
 
-    // Non-Encoded
-    await fetch(`http://0.0.0.0:${requests.port()}`, {
-      method: 'POST',
-      body: 'It\'s true, and I have to say what\'s true',
-    });
-
-    // JSON Encoded
-    await fetch(`http://0.0.0.0:${requests.port()}`, {
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-      body: JSON.stringify({ name: 'wilbur' }),
-    });
-
-    // URL Encoded
     const params = new URLSearchParams();
     params.append('name', 'charlotte');
     await fetch(`http://0.0.0.0:${requests.port()}`, {
       method: 'POST',
       body: params,
+    });
+
+    await requests.close();
+
+  } catch (e) {
+    return e;
+  }
+}
+
+async function requestBodyParserJSON() {
+  const description = `JSON encoded body content
+  will be parsed into an object`;
+
+  try {
+    const requests = new HttpServer({ port: 0 });
+    requests.route('POST', '/', (req, meta) => {
+
+      assert.equal(
+        typeof req.body,
+        'object'
+      );
+
+      assert.deepEqual(
+        { name: 'wilbur' },
+        req.body,
+      );
+
+    })
+
+    await requests.listen();
+
+    await fetch(`http://0.0.0.0:${requests.port()}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'wilbur' }),
     });
 
     await requests.close();
