@@ -10,6 +10,7 @@ export const tests = [
   illegalRouteMethods,
   responseConstructor,
   requestBodyParserURLencoded,
+  requestBodyParserJSON,
 ];
 
 async function portZeroTest() {
@@ -158,9 +159,44 @@ async function requestBodyParserURLencoded() {
 
     const params = new URLSearchParams();
     params.append('name', 'charlotte');
-    const res = await fetch(`http://0.0.0.0:${requests.port()}`, {
+    await fetch(`http://0.0.0.0:${requests.port()}`, {
       method: 'POST',
       body: params,
+    });
+
+    await requests.close();
+
+  } catch (e) {
+    return e;
+  }
+}
+
+async function requestBodyParserJSON() {
+  const description = `JSON encoded body content
+  will be parsed into an object`;
+
+  try {
+    const requests = new HttpServer({ port: 0 });
+    requests.route('POST', '/', (req, meta) => {
+
+      assert.equal(
+        typeof req.body,
+        'object'
+      );
+
+      assert.deepEqual(
+        { name: 'wilbur' },
+        req.body,
+      );
+
+    })
+
+    await requests.listen();
+
+    await fetch(`http://0.0.0.0:${requests.port()}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'wilbur' }),
     });
 
     await requests.close();
