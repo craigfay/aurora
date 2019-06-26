@@ -12,6 +12,6 @@ s.route('ALL', '/*', contextualizeCookie);
 s.route('GET', '/*', (req, meta) => console.log({ req, meta }));
 // s.route('ALL', '/*', authenticate);
 s.route('POST', '/login', login);
-// s.route('GET', '/users', getUsers);
+s.route('GET', '/users', getUsers);
 
 s.listen();

@@ -4,7 +4,7 @@ module.exports = {
   userRetrieval,
 };
 
-async function userRetrieval(descriptors) {
+async function userRetrieval(descriptors={}) {
   return await knex('users').select('*').where(descriptors);
 }
 
