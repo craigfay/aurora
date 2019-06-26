@@ -92,8 +92,14 @@ function adaptRequest(ctx): HttpRequestInterface {
     headers, 
   } = ctx;
 
-  const { body } = ctx.request;
-  
+  let body = '';
+  if (typeof ctx.request.rawBody == 'string') {
+    body = ctx.request.rawBody;
+  }
+  else if (typeof ctx.request.body == 'string') {
+    body = ctx.request.body;
+  }
+
   return Object.freeze({
     method,
     url,
