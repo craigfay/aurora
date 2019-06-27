@@ -160,6 +160,8 @@ async function loginTest() {
     );
 
     await requests.close();
+    await db.destroy();
+    await client.quit();
   }
   catch (e) {
     return e;
