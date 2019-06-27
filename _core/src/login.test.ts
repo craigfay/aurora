@@ -1,8 +1,47 @@
 const { HttpServer, HttpResponse, Cookie } = require('./main');
+const assert = require('assert').strict;
+const fetch = require('node-fetch');
 
 export const tests = [
   loginTest,
 ]
+
+/**
+ * knexfile.js
+ */
+const path = require('path');
+const BASE_PATH = path.join(__dirname, 'app', 'db');
+
+const knexfile = {
+  test: {
+    client: 'pg',
+    connection: process.env.TEST_DB_HOST,
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations')
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds')
+    }
+  },
+  development: {
+    client: 'pg',
+    connection: process.env.DB_HOST,
+    migrations: {
+      tableName: 'knex_migrations',
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+};
+
+/**
+ * db/connection.js
+ */
+const environment = process.env.NODE_ENV || 'development';
+const config = knexfile[environment];
+const db = require('knex')(config)
 
 /**
  * cache/connection.js
@@ -28,8 +67,6 @@ const keys = promisify(client.keys).bind(client);
 /**
  * /services/user-retrieval.js
  */
-const db = require('../db/connection');
-
 async function userRetrieval(descriptors={}) {
   return await db('users').select('*').where(descriptors);
 }
@@ -104,16 +141,25 @@ async function loginTest() {
      * http/server.js
      * 
      */
-    const s = new HttpServer({ port: 4000 });
-    s.route('ALL', '/*', contextualizeCookie);
-    s.route('GET', '/*', (req, meta) => console.log({ req, meta }));
+    const requests = new HttpServer({ port: 0 });
+    requests.route('ALL', '/*', contextualizeCookie);
     // @ts-ignore
-    s.route('POST', '/login', login);
+    requests.route('POST', '/login', login);
     // @ts-ignore
-    s.route('GET', '/users', getUsers);
+    requests.route('GET', '/users', getUsers);
 
-    s.listen();
+    await requests.listen();
 
+    const getUsersResponse = await fetch(`http://0.0.0.0:${requests.port()}/users`);
+    assert.deepEqual(
+      await getUsersResponse.json(),
+      [
+        { id: 38, username: 'jeremy', password: 'somepass' },
+        { id: 39, username: 'hank', password: 'othrpass' },
+      ],
+    );
+
+    await requests.close();
   }
   catch (e) {
     return e;

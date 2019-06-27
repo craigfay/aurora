@@ -3,8 +3,9 @@
  */
 
 import { performance } from 'perf_hooks';
-import { tests as serverTests } from './server.test'
-import { tests as cookieTests } from './cookie.test'
+import { tests as serverTests } from './server.test';
+import { tests as cookieTests } from './cookie.test';
+import { tests as LoginTests } from './login.test';
 
 // Console colors
 const red = '\x1b[31m';
@@ -26,3 +27,4 @@ async function runWithTimer(fn) {
 
 serverTests.forEach(test => runWithTimer(test));
 cookieTests.forEach(test => runWithTimer(test));
+LoginTests.forEach(test => runWithTimer(test));
