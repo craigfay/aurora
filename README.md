@@ -32,6 +32,7 @@ Resources:
 * Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
 * Have a more thoughtfull directory structure for the volumes in Docker
 * Investigate @koa/cors and when it's necessary
+* Investigate deploying only a Docker image that clones in all supporting files
 
 ## Unanswered Questions
 * How can database content be persistent accross image/container destruction?
