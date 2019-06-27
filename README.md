@@ -26,6 +26,7 @@ Resources:
 * Add close() methods for db and cache
 * Decide how to handle tests that require docker containers
 * Decide how to include migration/seeding in tests
+* Make Cookie.stringify and Cookie.parse use the same object shape
 * Allow shorthand HttpResponse construction
 * Investigate 'Bad Request' response on malformed JSON requests (probably koa?)
 * Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
