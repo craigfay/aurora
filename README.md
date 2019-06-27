@@ -23,6 +23,9 @@ Resources:
 * [How is Docker Different from a VM?](https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine?rq=1)
 
 ## Todo
+* Add close() methods for db and cache
+* Decide how to handle tests that require docker containers
+* Decide how to include migration/seeding in tests
 * Allow shorthand HttpResponse construction
 * Investigate 'Bad Request' response on malformed JSON requests (probably koa?)
 * Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
