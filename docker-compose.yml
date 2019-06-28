@@ -40,23 +40,6 @@ services:
       REDIS_HOST: redis://cache
       REDIS_PORT: 6379
 
-  # Run postgres migrations
-  migration:
-    <<: *node_base
-    container_name: migration
-    command: [ "npx", "knex", "migrate:latest" ]
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  # Run postgres seeding
-  seed:
-    <<: *node_base
-    container_name: seed
-    command: [ "npx", "knex", "seed:run", "--env", "development" ]
-    depends_on:
-      - migration
-
   # Primary Application Entrypoint
   webserver:
     <<: *node_base
@@ -64,7 +47,9 @@ services:
     ports:
       - "4000:4000"
       - "9229:9229"
-    command: [ "npm", "run", "watch" ]
+    command: "node -e \"setInterval( () => {}, 60000 )\""
     depends_on:
-      - migration
-      - seed
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
