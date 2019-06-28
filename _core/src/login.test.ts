@@ -6,42 +6,18 @@ export const tests = [
   loginTest,
 ]
 
-/**
- * knexfile.js
- */
-const path = require('path');
-const BASE_PATH = path.join(__dirname, 'app', 'db');
-
-const knexfile = {
-  test: {
-    client: 'pg',
-    connection: process.env.TEST_DB_HOST,
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations')
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds')
-    }
-  },
-  development: {
-    client: 'pg',
-    connection: process.env.DB_HOST,
-    migrations: {
-      tableName: 'knex_migrations',
-      directory: path.join(BASE_PATH, 'migrations'),
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds'),
-    },
-  },
-};
 
 /**
  * db/connection.js
  */
-const environment = process.env.NODE_ENV || 'development';
-const config = knexfile[environment];
-const db = require('knex')(config)
+const dbConfig = {
+  test: {
+    client: 'pg',
+    connection: process.env.TEST_DB_HOST,
+  }
+};
+
+const db = require('knex')(dbConfig.test)
 
 
 /**
@@ -56,7 +32,7 @@ const usersMigration = {
     });
   },
   down: async db => {
-    return db.schema.dropTable('users');
+    return db.schema.dropTableIfExists('users');
   }
 }
 
