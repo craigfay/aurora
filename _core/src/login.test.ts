@@ -43,6 +43,38 @@ const environment = process.env.NODE_ENV || 'development';
 const config = knexfile[environment];
 const db = require('knex')(config)
 
+
+/**
+ * Users Migration
+ */
+const usersMigration = {
+  up: async db => {
+    return db.schema.createTable('users', (table) => {
+      table.increments();
+      table.string('username').unique().notNullable();
+      table.string('password').notNullable();
+    });
+  },
+  down: async db => {
+    return db.schema.dropTable('users');
+  }
+}
+
+/**
+ * Users Seed
+ */
+const usersSeed = async db => {
+  await db('users').del()
+  await db('users').insert({
+    username: 'jeremy',
+    password: 'somepass',
+  })
+  await db('users').insert({
+    username: 'hank',
+    password: 'othrpass',
+  })
+};
+
 /**
  * cache/connection.js
  * Implement a key -> value cache with redis to create user sessions
@@ -137,6 +169,10 @@ function contextualizeCookie(request, context) {
 
 async function loginTest() {
   try {
+    await usersMigration.down(db);
+    await usersMigration.up(db);
+    await usersSeed(db);
+
     /**
      * http/server.js
      * 
@@ -154,8 +190,8 @@ async function loginTest() {
     assert.deepEqual(
       await getUsersResponse.json(),
       [
-        { id: 38, username: 'jeremy', password: 'somepass' },
-        { id: 39, username: 'hank', password: 'othrpass' },
+        { id: 1, username: 'jeremy', password: 'somepass' },
+        { id: 2, username: 'hank', password: 'othrpass' },
       ],
     );
 
