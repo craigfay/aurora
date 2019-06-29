@@ -26,16 +26,38 @@ export function parse(cookies: string): object {
     const c = cookies!.split(";");
     for (const kv of c) {
       const parsed:Cookie = { name: undefined, value: undefined }
-      let [name, details] = kv.split('=');
-      const [value, ...options] = details.split(';');
-      
-      if (name && value) {
-        parsed.name = name.trim();
-        parsed.value = value;
-        out.push(parsed);
-      }
+      let [name, value] = kv.trim().split('=');
 
-      // @TODO parse options
+      if (name && value) {
+        if (name == 'Expires') {
+          out[out.length - 1].expires = value;
+        }
+        else if (name == 'Path') {
+          out[out.length - 1].path = value;
+        }
+        else if (name == 'SameSite') {
+          out[out.length - 1].sameSite = value;
+        }
+        else if (name == 'MaxAge') {
+          out[out.length - 1].maxAge = value;
+        }
+        else if (name == 'Domain') {
+          out[out.length - 1].domain = value;
+        }
+        else {
+          parsed.name = name;
+          parsed.value = value;
+          out.push(parsed);
+          continue;
+        }
+      }
+      
+      if (name == 'Secure') {
+        out[out.length - 1].secure = true;
+      }
+      if (name == 'HttpOnly') {
+        out[out.length - 1].httpOnly = true;
+      }
     }
   }
   return out;
