@@ -30,7 +30,7 @@ export function parse(cookies: string): object {
 
       if (name && value) {
         if (name == 'Expires') {
-          out[out.length - 1].expires = value;
+          out[out.length - 1].expires = new Date(Date.parse(value));
         }
         else if (name == 'Path') {
           out[out.length - 1].path = value;

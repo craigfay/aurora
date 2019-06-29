@@ -322,10 +322,10 @@ async function cookieParseOptionsTest() {
 
   try {
     const material = [
-      { name: 'i', value: 'took' },
+      { name: 'i', value: 'took', secure: true },
       { name: 'six', value: 'fish', httpOnly: true },
-      { name: 'out', value: 'of', secure: true },
-      { name: 'the', value: 'bag' },
+      { name: 'out', value: 'of' },
+      { name: 'the', value: 'bag', expires: new Date(Date.UTC(1994, 10, 1, 17, 36)) },
     ]
 
     const cookie = Cookie.stringify(...material);
