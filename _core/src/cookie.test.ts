@@ -15,6 +15,7 @@ export const tests = [
   cookieNonStringParseTest,
   cookieApplicationTest,
   cookieParseTest,
+  cookieParseOptionsTest,
 ];
 
 async function cookieStringifyTest() {
@@ -300,6 +301,31 @@ async function cookieParseTest() {
       { name: 'how', value: 'many' },
       { name: 'dogs', value: 'we' },
       { name: 'got', value: 'henry' },
+    ]
+
+    const cookie = Cookie.stringify(...material);
+    const parsed = Cookie.parse(cookie);
+
+    assert.deepEqual(
+      parsed,
+      material,
+    );
+
+  }
+  catch (e) {
+    return e;
+  }
+}
+
+async function cookieParseOptionsTest() {
+  description: `Cookie options should be parsed`
+
+  try {
+    const material = [
+      { name: 'i', value: 'took' },
+      { name: 'six', value: 'fish', httpOnly: true },
+      { name: 'out', value: 'of', secure: true },
+      { name: 'the', value: 'bag' },
     ]
 
     const cookie = Cookie.stringify(...material);
