@@ -24,7 +24,7 @@ Resources:
 
 ## Todo
 * Add close() methods for db and cache
-* Make Cookie.stringify and Cookie.parse use the same object shape
+* Account for options in Cookie.parse()
 * Allow shorthand HttpResponse construction
 * convert (request, context) to (req, meta)
 * Investigate 'Bad Request' response on malformed JSON requests (probably koa?)
