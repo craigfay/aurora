@@ -9,11 +9,9 @@ export interface Cookie {
   path?: string;
   secure?: boolean;
   httpOnly?: boolean;
-  sameSite?: SameSite;
+  sameSite?: string;
   unparsed?: string[];
 }
-
-export type SameSite = "Strict" | "Lax";
 
 /**
  * Parse the "Cookies" header value into a list of Cookie objects
@@ -38,8 +36,8 @@ export function parse(cookies: string): object {
         else if (name == 'SameSite') {
           out[out.length - 1].sameSite = value;
         }
-        else if (name == 'MaxAge') {
-          out[out.length - 1].maxAge = value;
+        else if (name == 'Max-Age') {
+          out[out.length - 1].maxAge = Number(value);
         }
         else if (name == 'Domain') {
           out[out.length - 1].domain = value;

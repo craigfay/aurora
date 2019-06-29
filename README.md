@@ -22,15 +22,17 @@ Resources:
 
 * [How is Docker Different from a VM?](https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine?rq=1)
 
+* [Cookie Max-Age vs Expires](https://mrcoles.com/blog/cookies-max-age-vs-expires/)
+
 ## Todo
 * Add close() methods for db and cache
-* Account for options in Cookie.parse()
 * Allow shorthand HttpResponse construction
 * Investigate 'Bad Request' response on malformed JSON requests (probably koa?)
 * Have a more thoughtfull directory structure for the volumes in Docker
 * Investigate @koa/cors and when it's necessary
 * Investigate deploying only a Docker image that clones in all supporting files
 * Add an entrypoint.js type module for running migrations etc..
+* Maybe use GMT format for cookie.expires
 
 ## Unanswered Questions
 * How can database content be persistent accross image/container destruction?

@@ -318,14 +318,18 @@ async function cookieParseTest() {
 }
 
 async function cookieParseOptionsTest() {
-  description: `Cookie options should be parsed`
+  description: `Cookie options should be parsed
+  to the same state that they were stringified in.`
 
   try {
     const material = [
       { name: 'i', value: 'took', secure: true },
       { name: 'six', value: 'fish', httpOnly: true },
-      { name: 'out', value: 'of' },
+      { name: 'out', value: 'of', path: '/' },
       { name: 'the', value: 'bag', expires: new Date(Date.UTC(1994, 10, 1, 17, 36)) },
+      { name: 'gave', value: 'one', sameSite: 'Lax' },
+      { name: 'fish', value: 'to', domain: 'onefish.short' },
+      { name: 'each', value: 'dog', maxAge: 5 },
     ]
 
     const cookie = Cookie.stringify(...material);
