@@ -24,15 +24,14 @@ Resources:
 
 ## Todo
 * Add close() methods for db and cache
-* Decide how to handle tests that require docker containers
-* Decide how to include migration/seeding in tests
 * Make Cookie.stringify and Cookie.parse use the same object shape
 * Allow shorthand HttpResponse construction
+* convert (request, context) to (req, meta)
 * Investigate 'Bad Request' response on malformed JSON requests (probably koa?)
-* Investigate knex's `npm WARN deprecated @babel/polyfill@7.4.4: `
 * Have a more thoughtfull directory structure for the volumes in Docker
 * Investigate @koa/cors and when it's necessary
 * Investigate deploying only a Docker image that clones in all supporting files
+* Add an entrypoint.js type module for running migrations etc..
 
 ## Unanswered Questions
 * How can database content be persistent accross image/container destruction?
