@@ -3,7 +3,7 @@ const { authenticate } = require('./routes/authenticate')
 const { login } = require('./routes/login');
 const { getUsers } = require('./routes/get-users');
 
-function contextualizeCookie(request, context) {
+function contextualizeCookie(req, meta) {
   context.cookie = Cookie.parse(request.headers.cookie);
 }
 

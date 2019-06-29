@@ -139,8 +139,8 @@ async function login(req, meta) {
   }
 }
 
-function contextualizeCookie(request, context) {
-  context.cookie = Cookie.parse(request.headers.cookie);
+function contextualizeCookie(req, meta) {
+  meta.cookie = Cookie.parse(req.headers.cookie);
 }
 
 async function loginTest() {

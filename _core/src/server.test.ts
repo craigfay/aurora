@@ -37,7 +37,7 @@ async function defaultHeadersTest() {
   try {
     // Start up an http server
     const requests = new HttpServer({ port: 0 });
-    requests.route('GET', '/', (request, meta) => {
+    requests.route('GET', '/', (req, meta) => {
       return {
         status: 200,
         headers: {},
@@ -70,10 +70,10 @@ async function handlerMetaTest() {
   try {
     // Start up an http server
     const requests = new HttpServer({ port: 0 });
-    requests.route('GET', '/', (request, meta) => {
+    requests.route('GET', '/', (req, meta) => {
       meta.desire = 'love';
     })
-    requests.route('GET', '/', (request, meta) => {
+    requests.route('GET', '/', (req, meta) => {
       return {
         status: 200,
         headers: {},
@@ -101,7 +101,7 @@ async function illegalRouteMethods() {
   try {
     const registerIllegalRoute = () => {
       const requests = new HttpServer({ port: 0 });
-      requests.route('SAVE', '/', (request, meta) => {
+      requests.route('SAVE', '/', (req, meta) => {
         return new HttpResponse();
       })
     }
@@ -123,7 +123,7 @@ async function responseConstructor() {
   try {
     // Start up an http server
     const requests = new HttpServer({ port: 0 });
-    requests.route('GET', '/', (request, meta) => {
+    requests.route('GET', '/', (req, meta) => {
       return new HttpResponse();
     })
 

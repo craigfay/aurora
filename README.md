@@ -26,7 +26,6 @@ Resources:
 * Add close() methods for db and cache
 * Account for options in Cookie.parse()
 * Allow shorthand HttpResponse construction
-* convert (request, context) to (req, meta)
 * Investigate 'Bad Request' response on malformed JSON requests (probably koa?)
 * Have a more thoughtfull directory structure for the volumes in Docker
 * Investigate @koa/cors and when it's necessary

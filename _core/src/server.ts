@@ -36,10 +36,10 @@ export class HttpServer implements HttpServerInterface {
       throw new Error(`Unsupported verb "${method}".`);
     }
     this.router[verb](path, async (ctx, next) => {
-        const request = adaptRequest(ctx);
+        const req = adaptRequest(ctx);
         const meta = ctx._meta || {};
 
-        const response: HttpResponseInterface | void = await handler(request, meta);
+        const response: HttpResponseInterface | void = await handler(req, meta);
         if (response) {
           adaptResponse(response, ctx);
         } else {
