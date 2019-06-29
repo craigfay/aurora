@@ -10,7 +10,6 @@ export interface Cookie {
   secure?: boolean;
   httpOnly?: boolean;
   sameSite?: string;
-  unparsed?: string[];
 }
 
 /**
@@ -116,9 +115,6 @@ export function stringify(...cookies: Cookie[]) {
       }
       assert(cookie.expires instanceof Date, "Cookie expiration cannot be converted to a valid Date object")
       out.push(`Expires=${cookie.expires.toUTCString()}`);
-    }
-    if (cookie.unparsed) {
-      out.push(cookie.unparsed.join("; "));
     }
 
     return out.join("; ");
