@@ -1,6 +1,6 @@
 import { createClient } from 'redis';
 import { promisify } from 'util';
-import { CacheInterface, CacheOptionsInterface } from './cache.types'
+import { CacheInterface, CacheOptionsInterface } from './cache.types';
 
 export class Cache implements CacheInterface {
   options: CacheOptionsInterface;
@@ -29,5 +29,9 @@ export class Cache implements CacheInterface {
 
   async keys(): Promise<object> {
     return await this._asyncKeys();
+  }
+
+  close(): void {
+    this.client.quit();
   }
 }

@@ -1,6 +1,12 @@
-const { HttpServer, HttpResponse, Cookie } = require('./main');
 const assert = require('assert').strict;
 const fetch = require('node-fetch');
+
+const {
+  HttpServer,
+  HttpResponse,
+  Cookie,
+  Cache,
+} = require('./main');
 
 export const tests = [
   loginTest,
@@ -53,24 +59,8 @@ const usersSeed = async db => {
 
 /**
  * cache/connection.js
- * Implement a key -> value cache with redis to create user sessions
  */
-
-const { createClient } = require('redis');
-const { promisify } = require('util');
-
-const client = createClient(process.env.REDIS_HOST);
-
-client.on('error', function (err) {
-  throw new Error('Cache Error: ' + err);
-});
-
-/**
- * Async versions of `get`, `set`, and `keys`
- */
-const get = promisify(client.get).bind(client);
-const set = promisify(client.set).bind(client);
-const keys = promisify(client.keys).bind(client);
+const cache = new Cache({ address: process.env.REDIS_HOST });
 
 /**
  * /services/user-retrieval.js
@@ -81,21 +71,18 @@ async function userRetrieval(descriptors={}) {
 
 /**
  * services/session-creation.js
- * 
  */
 import * as crypto from 'crypto';
 
 async function sessionCreation(key) {
   let sessionId = crypto.randomBytes(32).toString("hex");
-  if ('OK' == await set(sessionId, key)) return sessionId;
+  if ('OK' == await cache.set(sessionId, key)) return sessionId;
 }
 
 
 /**
  * routes/get-users.js
- * 
  */
-
 async function getUsers(req, meta) {
   const json = JSON.stringify(await userRetrieval());
   return new HttpResponse({ body: json });
@@ -104,8 +91,6 @@ async function getUsers(req, meta) {
 /**
  * http/routes/login.js
  */
-
-
 async function login(req, meta) {
   try {
     
@@ -151,13 +136,10 @@ async function loginTest() {
 
     /**
      * http/server.js
-     * 
      */
     const requests = new HttpServer({ port: 0 });
     requests.route('ALL', '/*', contextualizeCookie);
-    // @ts-ignore
     requests.route('POST', '/login', login);
-    // @ts-ignore
     requests.route('GET', '/users', getUsers);
 
     await requests.listen();
@@ -173,7 +155,7 @@ async function loginTest() {
 
     await requests.close();
     await db.destroy();
-    await client.quit();
+    await cache.close();
   }
   catch (e) {
     return e;
