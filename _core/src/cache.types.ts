@@ -1,10 +1,16 @@
 export interface CacheInterface {
   get: (key:string) => Promise<any>;
-  set: (key: string, value: any) => Promise<boolean>;
+  set: (key: string, value: any, options: SetOptionsInterface) => Promise<boolean>;
   keys: () => Promise<object>;
   close: () => void;
 }
 
 export interface CacheOptionsInterface {
   address: string;
+}
+
+export interface SetOptionsInterface {
+  expires?: number;
+  ifNotExists: boolean;
+  ifExists: boolean;
 }

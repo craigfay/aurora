@@ -1,6 +1,10 @@
 import { createClient } from 'redis';
 import { promisify } from 'util';
-import { CacheInterface, CacheOptionsInterface } from './cache.types';
+import {
+  CacheInterface,
+  CacheOptionsInterface,
+  SetOptionsInterface,
+} from './cache.types';
 
 export class Cache implements CacheInterface {
   options: CacheOptionsInterface;
@@ -23,8 +27,13 @@ export class Cache implements CacheInterface {
     return await this._asyncGet(key);
   }
 
-  async set(key:string, val: any): Promise<boolean> {
-    return Boolean(await this._asyncSet(key));
+  async set(key:string, val: any, options:SetOptionsInterface): Promise<boolean> {
+    const adaptedOptions = {
+      EX: options.expires,
+      NX: options.ifNotExists,
+      XX: options.ifExists,
+    }
+    return 'OK' == await this._asyncSet(key, val, adaptedOptions);
   }
 
   async keys(): Promise<object> {
