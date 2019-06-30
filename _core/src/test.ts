@@ -3,12 +3,8 @@
  */
 
 import { performance } from 'perf_hooks';
-import { tests as serverTests } from './server.test';
-import { tests as cookieTests } from './cookie.test';
-import { tests as loginTests } from './login.test';
-import { tests as cacheTests } from './cache.test';
 
-// Console colors
+// Console Colors
 const red = '\x1b[31m';
 const green = '\x1b[32m';
 const reset = '\x1b[0m';
@@ -26,7 +22,16 @@ async function runWithTimer(fn) {
   }
 }
 
-serverTests.forEach(test => runWithTimer(test));
-cookieTests.forEach(test => runWithTimer(test));
-loginTests.forEach(test => runWithTimer(test));
-cacheTests.forEach(test => runWithTimer(test));
+async function testSuite() {
+  const allTests = [
+    ...require('./server.test').tests,
+    ...require('./cookie.test').tests,
+    ...require('./login.test').tests,
+    ...require('./cache.test').tests,
+  ];
+  for (const test of allTests) {
+    await runWithTimer(test);
+  }
+}
+
+runWithTimer(testSuite);
