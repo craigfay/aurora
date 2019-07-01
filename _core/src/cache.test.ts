@@ -29,6 +29,7 @@ async function cacheDeleteAllTest() {
   try {
     const cache = new Cache({ address: process.env.REDIS_HOST });
     assert(await cache.deleteAll());
+    assert.deepEqual(await cache.keys(), []);
     await cache.close();
   }
   catch (e) {
