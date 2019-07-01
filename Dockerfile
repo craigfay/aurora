@@ -9,8 +9,9 @@ WORKDIR /usr/src/app
 # all the dependencies. Then copy the rest of the files
 # recursively into the container.
 COPY package.json .
-# RUN npm install 
 COPY . .
+
+CMD npm install
 
 # Expose port 4000 inside the container to the outside world
 # so that http://localhost:4000 routes the network traffic to
