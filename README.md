@@ -24,6 +24,8 @@ Resources:
 
 * [Cookie Max-Age vs Expires](https://mrcoles.com/blog/cookies-max-age-vs-expires/)
 
+* [Lets Encrypt with Koa](https://www.rechberger.io/setup-https-letsencrypt-for-koa-js/)
+
 ## Todo
 * Add close() methods for db and cache
 * Allow shorthand HttpResponse construction
