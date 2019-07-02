@@ -26,6 +26,8 @@ Resources:
 
 * [Lets Encrypt with Koa](https://www.rechberger.io/setup-https-letsencrypt-for-koa-js/)
 
+* [DigitalOcean on SSL](https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-mode-to-retrieve-let-s-encrypt-ssl-certificates-on-debian-9)
+
 ## Todo
 * Add close() methods for db and cache
 * Allow shorthand HttpResponse construction
