@@ -16,6 +16,7 @@ async function runWithTimer(fn) {
   const runTime = (endTime - startTime).toFixed(2);
   if (result instanceof Error) {
     console.error(`${fn.name}: ${runTime} ms ${red}fail${reset}`, '\n', result, '\n')
+    return new Error('Test Failure');
   }
   else {
     console.log(`${fn.name}: ${runTime} ms ${green}ok${reset}`); 
@@ -30,7 +31,8 @@ async function testSuite() {
     ...require('./cache.test').tests,
   ];
   for (const test of allTests) {
-    await runWithTimer(test);
+    const result = await runWithTimer(test);
+    if (result instanceof Error) return result;
   }
 }
 
