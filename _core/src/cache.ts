@@ -56,9 +56,8 @@ export class Cache implements CacheInterface {
     return 'OK' == await this._asyncSet(key, val, ...optionsList);
   }
 
-  async keys(glob:string='*'): Promise<object> {
-    enforceArgumentType('glob', glob, 'string');
-    return await this._asyncKeys(glob);
+  async keys(): Promise<string[]> {
+    return await this._asyncKeys('*');
   }
 
   async delete(key:string): Promise<boolean> {

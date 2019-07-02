@@ -1,7 +1,7 @@
 export interface CacheInterface {
-  get: (key:string) => Promise<any>;
+  get: (key:string) => Promise<string>;
   set: (key: string, val: string, options?: SetOptionsInterface) => Promise<boolean>;
-  keys: (glob: string) => Promise<object>;
+  keys: () => Promise<string[]>;
   close: () => void;
 }
 
