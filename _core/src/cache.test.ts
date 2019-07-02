@@ -44,8 +44,18 @@ async function cacheSetTest() {
     assert(await cache.set('Time', 'Traveler'))
     assert(await cache.set('for', JSON.stringify(['it', 'will', 'be', 'convenient'])));
 
-    await cache.close();
+    assert.rejects(
+      // @ts-ignore
+      () => cache.set(true, 'was expounding'),
+      { message: 'Argument "key" must be of type string. Received type boolean' }
+    );
+    assert.rejects(
+      // @ts-ignore
+      async () => await cache.set('a recondite matter to us', false),
+      { message: 'Argument "val" must be of type string. Received type boolean' }
+    );
 
+    await cache.close();
   }
   catch (e) {
     return e;

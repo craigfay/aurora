@@ -1,4 +1,4 @@
-FROM node:9
+FROM node:10
 
 # Essentially running mkdir <name> inside the current working
 # directory, and then cd <name>
