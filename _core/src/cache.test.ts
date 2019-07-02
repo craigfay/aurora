@@ -5,6 +5,8 @@ export const tests = [
   cacheConstructTest,
   cacheDeleteAllTest,
   cacheSetTest,
+  cacheGetTest,
+  cacheKeysTest,
 ]
 
 async function cacheConstructTest() {
@@ -66,6 +68,55 @@ async function cacheSetTest() {
       { message: 'Argument "val" must be of type string. Received type object' }
     );
 
+    await cache.close();
+  }
+  catch (e) {
+    return e;
+  }
+}
+
+async function cacheGetTest() {
+  try {
+    const cache = new Cache({ address: process.env.REDIS_HOST });
+
+    assert(await cache.set('his usually pale face', 'was flushed and animated'));
+    assert.equal(await cache.get('his usually pale face'),  'was flushed and animated');
+
+    assert(await cache.set('his usually pale face', 'The fire burnt brightly'));
+    assert.equal(await cache.get('his usually pale face'),  'The fire burnt brightly');
+
+    assert(await cache.set('his usually pale face', ''));
+    assert.equal(await cache.get('his usually pale face'),  '');
+    
+    assert.equal(await cache.get('of the incandescent lights in the lilies'), null);
+
+    assert.rejects(
+      // @ts-ignore
+      () => cache.get(true),
+      { message: 'Argument "key" must be of type string. Received type boolean' }
+    );
+    assert.rejects(
+      // @ts-ignore
+      async () => await cache.get(['and', 'the', 'soft', 'radiance']),
+      { message: 'Argument "key" must be of type string. Received type object' }
+    );
+    assert.rejects(
+      // @ts-ignore
+      async () => await cache.get(500),
+      { message: 'Argument "key" must be of type string. Received type number' }
+    );
+
+    await cache.close();
+  }
+  catch (e) {
+    return e;
+  }
+}
+
+async function cacheKeysTest() {
+  try {
+    const cache = new Cache({ address: process.env.REDIS_HOST });
+    assert(await cache.keys() instanceof Array);
     await cache.close();
   }
   catch (e) {

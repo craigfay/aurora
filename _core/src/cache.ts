@@ -27,7 +27,8 @@ export class Cache implements CacheInterface {
     this._asyncFlushdb = promisify(this.client.flushdb).bind(this.client);
   }
 
-  async get(key:string): Promise<any> {
+  async get(key:string): Promise<string | null> {
+    enforceArgumentType('key', key, 'string');
     return await this._asyncGet(key);
   }
 
