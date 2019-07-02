@@ -12,7 +12,7 @@ export const tests = [
 
 async function cacheConstructTest() {
   try {
-    const cache = new Cache({ address: process.env.REDIS_HOST });
+    const cache = new Cache({ address: process.env.CACHE_HOST });
     assert.equal(typeof cache, 'object');
     assert.equal(cache instanceof Promise, false);
     assert(typeof cache.get == 'function');
@@ -30,7 +30,7 @@ async function cacheConstructTest() {
 
 async function cacheDeleteAllTest() {
   try {
-    const cache = new Cache({ address: process.env.REDIS_HOST });
+    const cache = new Cache({ address: process.env.CACHE_HOST });
     assert(await cache.deleteAll());
     assert.deepEqual(await cache.keys(), []);
     await cache.close();
@@ -42,7 +42,7 @@ async function cacheDeleteAllTest() {
 
 async function cacheSetTest() {
   try {
-    const cache = new Cache({ address: process.env.REDIS_HOST });
+    const cache = new Cache({ address: process.env.CACHE_HOST });
 
     assert(await cache.set('Time', 'Traveler'))
     assert(await cache.set('for', JSON.stringify(['it', 'will', 'be', 'convenient'])));
@@ -78,7 +78,7 @@ async function cacheSetTest() {
 
 async function cacheGetTest() {
   try {
-    const cache = new Cache({ address: process.env.REDIS_HOST });
+    const cache = new Cache({ address: process.env.CACHE_HOST });
 
     assert(await cache.set('his usually pale face', 'was flushed and animated'));
     assert.equal(await cache.get('his usually pale face'),  'was flushed and animated');
@@ -116,7 +116,7 @@ async function cacheGetTest() {
 
 async function cacheKeysTest() {
   try {
-    const cache = new Cache({ address: process.env.REDIS_HOST });
+    const cache = new Cache({ address: process.env.CACHE_HOST });
     assert(await cache.keys() instanceof Array);
     await cache.close();
   }
@@ -127,7 +127,7 @@ async function cacheKeysTest() {
 
 async function cacheDeleteTest() {
   try {
-    const cache = new Cache({ address: process.env.REDIS_HOST });
+    const cache = new Cache({ address: process.env.CACHE_HOST });
 
     assert(await cache.set('of silver caught the bubbles', 'that flashed and passed in our glasses'));
     assert.equal(await cache.get('of silver caught the bubbles'), 'that flashed and passed in our glasses');

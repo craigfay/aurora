@@ -5,7 +5,7 @@
 const { createClient } = require('redis');
 const { promisify } = require('util');
 
-const client = createClient(process.env.REDIS_HOST);
+const client = createClient(process.env.CACHE_HOST);
 
 client.on('error', function (err) {
   throw new Error('Cache Error: ' + err);

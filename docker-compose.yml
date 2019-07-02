@@ -37,8 +37,7 @@ services:
     environment:
       DB_HOST: postgres://postgres:password@postgres/primary_db
       TEST_DB_HOST: postgres://postgres:password@postgres/test_db
-      REDIS_HOST: redis://cache
-      REDIS_PORT: 6379
+      CACHE_HOST: redis://cache
 
   # Primary Application Entrypoint
   webserver:

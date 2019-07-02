@@ -60,7 +60,7 @@ const usersSeed = async db => {
 /**
  * cache/connection.js
  */
-const cache = new Cache({ address: process.env.REDIS_HOST });
+const cache = new Cache({ address: process.env.CACHE_HOST });
 
 /**
  * /services/user-retrieval.js
