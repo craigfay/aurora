@@ -7,6 +7,7 @@ export const tests = [
   cacheSetTest,
   cacheGetTest,
   cacheKeysTest,
+  cacheDeleteTest,
 ]
 
 async function cacheConstructTest() {
@@ -88,7 +89,7 @@ async function cacheGetTest() {
     assert(await cache.set('his usually pale face', ''));
     assert.equal(await cache.get('his usually pale face'),  '');
     
-    assert.equal(await cache.get('of the incandescent lights in the lilies'), null);
+    assert.equal(await cache.get('of the incandescent lights in the lilies'), undefined);
 
     assert.rejects(
       // @ts-ignore
@@ -117,6 +118,41 @@ async function cacheKeysTest() {
   try {
     const cache = new Cache({ address: process.env.REDIS_HOST });
     assert(await cache.keys() instanceof Array);
+    await cache.close();
+  }
+  catch (e) {
+    return e;
+  }
+}
+
+async function cacheDeleteTest() {
+  try {
+    const cache = new Cache({ address: process.env.REDIS_HOST });
+
+    assert(await cache.set('of silver caught the bubbles', 'that flashed and passed in our glasses'));
+    assert.equal(await cache.get('of silver caught the bubbles'), 'that flashed and passed in our glasses');
+
+    assert(await cache.delete('of silver caught the bubbles'));
+    assert.equal(await cache.get('of silver caught the bubbles'),  undefined);
+
+    assert.equal(await cache.delete('our chairs, being his patents, embraced and caressed us'), false);
+
+    assert.rejects(
+      // @ts-ignore
+      () => cache.delete(true),
+      { message: 'Argument "key" must be of type string. Received type boolean' }
+    );
+    assert.rejects(
+      // @ts-ignore
+      () => cache.delete(1000),
+      { message: 'Argument "key" must be of type string. Received type number' }
+    );
+    assert.rejects(
+      // @ts-ignore
+      () => cache.delete(['rather', 'than', 'submitted', 'to', 'be', 'sat', 'upon']),
+      { message: 'Argument "key" must be of type string. Received type object' }
+    );
+
     await cache.close();
   }
   catch (e) {

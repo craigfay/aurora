@@ -27,9 +27,10 @@ export class Cache implements CacheInterface {
     this._asyncFlushdb = promisify(this.client.flushdb).bind(this.client);
   }
 
-  async get(key:string): Promise<string | null> {
+  async get(key:string): Promise<string | undefined> {
     enforceArgumentType('key', key, 'string');
-    return await this._asyncGet(key);
+    const result = await this._asyncGet(key);
+    return typeof result === 'string' ? result : undefined;
   }
 
   async set(key:string, val: string, options:SetOptionsInterface={}): Promise<boolean> {
@@ -63,7 +64,7 @@ export class Cache implements CacheInterface {
 
   async delete(key:string): Promise<boolean> {
     enforceArgumentType('key', key, 'string');
-    return 'OK' == await this._asyncDel(key);
+    return 1 == await this._asyncDel(key);
   }
 
   async deleteAll(): Promise<boolean>  {
