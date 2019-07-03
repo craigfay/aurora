@@ -30,6 +30,8 @@ Resources:
 
 * [Nginx and Apache with Node](https://www.quora.com/When-using-node-js-do-you-still-need-Nginx-or-Apache)
 
+* [How to improve Node Performance with Nginx](https://www.nginx.com/blog/5-performance-tips-for-node-js-applications/)
+
 ## Todo
 * Add close() methods for db and cache
 * Allow shorthand HttpResponse construction
