@@ -24,9 +24,11 @@ Resources:
 
 * [Cookie Max-Age vs Expires](https://mrcoles.com/blog/cookies-max-age-vs-expires/)
 
-* [Lets Encrypt with Koa](https://www.rechberger.io/setup-https-letsencrypt-for-koa-js/)
+* [Lets Encrypt with Koa](http://blog.bguiz.com/2015/12/17/letsencrypt-tls-certs-nodejs/)
 
 * [DigitalOcean on SSL](https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-mode-to-retrieve-let-s-encrypt-ssl-certificates-on-debian-9)
+
+* [Nginx and Apache with Node](https://www.quora.com/When-using-node-js-do-you-still-need-Nginx-or-Apache)
 
 ## Todo
 * Add close() methods for db and cache
