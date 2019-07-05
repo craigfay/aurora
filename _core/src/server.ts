@@ -12,6 +12,7 @@ import {
   HttpResponseInterface,
   HttpResponseMaterial,
   RequestHandlerType,
+  HttpServerRoute,
 } from './server.types';
 import { Server } from 'https';
 
@@ -23,13 +24,31 @@ export class HttpServer implements HttpServerInterface {
   constructor(options: HttpServerOptionsInterface) {
     this.options = options;
     this.router = new KoaRouter();
+    
+    const { port, routes } = options;
+    const app = new Koa();
+    
+    // Required Middleware
+    app.use(bodyParser());
+    app.use(cors());
+    
+    if (routes && routes.length) {
+      for (const r of routes) {
+        this.applyRoute(r);
+      } 
+      app.use(this.router.routes());
+    }
+    
+    this.service = app.listen(port)
   }
 
   port() {
-    return (<AddressInfo>this.service.address()).port || undefined;
+    return (<AddressInfo>this.service.address()).port;
   }
 
-  route(method:string, path:string, handler:RequestHandlerType) {
+  private applyRoute(route: HttpServerRoute) {
+    const { method, path, handler } = route;
+
     const verb = method.toLowerCase();
     if ('function' !== typeof this.router[verb]) {
       throw new Error(`Unsupported verb "${method}".`);
@@ -48,7 +67,7 @@ export class HttpServer implements HttpServerInterface {
     })
   }
 
-  async listen() {
+  private async listen() {
     const { port } = this.options;
     const app = new Koa();
 

@@ -4,9 +4,10 @@
  */
 
 export interface HttpServerInterface {
-  route: (method, path, handler:RequestHandlerType) => void;
-  listen: () => void;
+  // route: (method, path, handler:RequestHandlerType) => void;
+  // listen: () => void;
   close: () => void;
+  port:() => number;
 }
 
 export interface HttpServerConstructorInterface {
@@ -15,7 +16,13 @@ export interface HttpServerConstructorInterface {
 
 export interface HttpServerOptionsInterface {
   port: number;
-  staticFileDirectory?: string;
+  routes?: HttpServerRoute[];
+}
+
+export interface HttpServerRoute {
+  method: string;
+  path: string;
+  handler: RequestHandlerType;
 }
 
 export interface HttpHeadersInterface {

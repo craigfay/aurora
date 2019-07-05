@@ -14,4 +14,4 @@ s.route('GET', '/*', (req, meta) => console.log({ req, meta }));
 s.route('POST', '/login', login);
 s.route('GET', '/users', getUsers);
 
-s.listen();
+// s.listen();
