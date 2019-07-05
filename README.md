@@ -32,6 +32,8 @@ Resources:
 
 * [How to improve Node Performance with Nginx](https://www.nginx.com/blog/5-performance-tips-for-node-js-applications/)
 
+* [Docker + Node + Nginx](https://www.digitalocean.com/community/tutorials/how-to-secure-a-containerized-node-js-application-with-nginx-let-s-encrypt-and-docker-compose)
+
 ## Todo
 * Add close() methods for db and cache
 * Allow shorthand HttpResponse construction
