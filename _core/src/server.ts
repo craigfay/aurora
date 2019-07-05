@@ -2,7 +2,6 @@ import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as KoaRouter from 'koa-router';
 import * as cors from '@koa/cors';
-import * as staticFiles from 'koa-static';
 import { AddressInfo } from 'net'; 
 
 import {
@@ -50,15 +49,12 @@ export class HttpServer implements HttpServerInterface {
   }
 
   async listen() {
-    const { port, staticFileDirectory } = this.options;
+    const { port } = this.options;
     const app = new Koa();
 
     // Required Middleware
     app.use(bodyParser());
     app.use(cors());
-
-    // Configurable Middleware
-    if (staticFileDirectory) app.use(staticFiles(staticFileDirectory));
 
     app.use(this.router.routes());
 
