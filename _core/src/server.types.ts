@@ -15,7 +15,6 @@ export interface HttpServerConstructorInterface {
 
 export interface HttpServerOptionsInterface {
   port: number;
-  staticFileDirectory?: string;
 }
 
 export interface HttpHeadersInterface {
