@@ -34,6 +34,8 @@ Resources:
 
 * [Docker + Node + Nginx](https://www.digitalocean.com/community/tutorials/how-to-secure-a-containerized-node-js-application-with-nginx-let-s-encrypt-and-docker-compose)
 
+* [Templatizing Dockerfile](https://blog.dockbit.com/templating-your-dockerfile-like-a-boss-2a84a67d28e9)
+
 ## Todo
 * Add close() methods for db and cache
 * Allow shorthand HttpResponse construction
