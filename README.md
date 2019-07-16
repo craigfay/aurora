@@ -2,6 +2,7 @@
 * Build image `docker-compose build`
 * Start image as container `docker-compose up`
 * Run psql inside the postgres container `docker exec -it database psql -U postgres`
+* Run tests `docker exec -it webserver npm run test`
 
 ## PSQL Commands
 * list databases `\l`
@@ -45,6 +46,8 @@ Resources:
 * Investigate deploying only a Docker image that clones in all supporting files
 * Add an entrypoint.js type module for running migrations etc..
 * Maybe use GMT format for cookie.expires
+* Maybe allow nested routes
+* config -> settings, views -> pages, routes -> urls
 
 ## Unanswered Questions
 * How can database content be persistent accross image/container destruction?
