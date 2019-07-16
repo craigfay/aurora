@@ -29,6 +29,7 @@ async function testSuite() {
     ...require('./cookie.test').tests,
     ...require('./login.test').tests,
     ...require('./cache.test').tests,
+    ...require('./models.test').tests,
   ];
   for (const test of allTests) {
     const result = await runWithTimer(test);
