@@ -50,6 +50,12 @@ export function string(name) {
   return f;
 }
 
+export function integer(name) {
+  let f: any = new Field(name);
+  f.constraints.push(val => assert(val === null || Number.isInteger(val)));
+  return f;
+}
+
 export function Model(...fields) {
   this.fields = {}
   fields.forEach(f => {

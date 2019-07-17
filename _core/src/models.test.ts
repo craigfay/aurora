@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string, Model } from './models';
+import { string, integer, Model } from './models';
 
 export const tests = [
   stringFieldCreationTest,
@@ -8,6 +8,7 @@ export const tests = [
   stringFieldNotNullTest,
   stringFieldAlphabeticalTest,
   stringFieldConstrainTest,
+  integerFieldCreationTest,
   modelCreationTest,
 ];
 
@@ -19,7 +20,11 @@ function stringFieldCreationTest() {
     let field = string('catchphrase');
     assert(field.name == 'catchphrase');
     assert(Array.isArray(field.constraints));
+    assert(typeof field.minLength == 'function');
     assert(typeof field.maxLength == 'function');
+    assert(typeof field.notNull == 'function');
+    assert(typeof field.alphabetical == 'function');
+    assert(typeof field.constrain == 'function');
   } catch (e) {
     return e;
   }
@@ -124,6 +129,19 @@ function stringFieldConstrainTest() {
       () => field.test('The Eagles'),
       { message: 'catchphrase must not include spaces' }
     );
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldCreationTest() {
+  const description = `integer fields can be created
+  and posess the expected properties`;
+
+  try {
+    let field = integer('salary');
+    assert(field.name == 'salary');
+    assert(Array.isArray(field.constraints));
   } catch (e) {
     return e;
   }
