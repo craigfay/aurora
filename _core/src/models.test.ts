@@ -145,7 +145,6 @@ function modelCreationTest() {
       string('lastname').maxLength(12).notNull()
     )
 
-    const testModel = 
     assert.doesNotThrow(() => cowboy.test({
         birthplace: 'Rio Grande',
         catchphrase: 'It\'s high noon',
