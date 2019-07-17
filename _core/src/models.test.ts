@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string } from './models';
+import { string, model } from './models';
 
 export const tests = [
   stringFieldCreationTest,
@@ -127,3 +127,43 @@ function stringFieldConstrainTest() {
     return e;
   }
 }
+
+function modelCreationTest() {
+  const description = `Models can be created
+  from a list of fields`;
+
+  try {
+    let mustBeJuanCarlos = (name, val) => {
+      if (val !== 'Juan Carlos')
+      throw new Error(`${name} must be Juan Carlos`);
+    }
+
+    let cowboy = model(
+      string('birthplace'),
+      string('catchphrase').notNull(),
+      string('firstname').minLength(1).constrain(mustBeJuanCarlos),
+      string('lastname').maxLength(12).notNull()
+    )
+
+    const testModel = 
+    assert.doesNotThrow(() => cowboy.test({
+        birthplace: 'Rio Grande',
+        catchphrase: 'It\'s high noon',
+        firstname: 'Juan Carlos',
+        lastname: 'Riviera',
+      })
+    );
+
+    assert.throws(
+      () => cowboy.test({
+        catchphrase: 'Get along lil doggy',
+        firstname: 'Rattlesnake Bill',
+        lastname: 'Turner',
+      }),
+      { message: 'firstname must be Juan Carlos' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
