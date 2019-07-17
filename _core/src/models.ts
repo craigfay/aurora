@@ -16,6 +16,7 @@ export function string(name) {
       if (val.length < len)
       throw new Error(`${name} has a min length of ${len}`);
     });
+    return f;
   }
 
   f.maxLength = len => {
@@ -23,6 +24,7 @@ export function string(name) {
       if (val.length > len)
       throw new Error(`${name} has a max length of ${len}`);
     });
+    return f;
   }
 
   f.notNull = () => {
@@ -30,6 +32,7 @@ export function string(name) {
       if (val == null)
       throw new Error(`${name} must not be null`);
     })
+    return f;
   }
 
   f.alphabetical = () => {
@@ -41,7 +44,20 @@ export function string(name) {
 
   f.constrain = fn => {
     f.constraints.push(val => fn(name, val));
+    return f;
   }
 
   return f;
+}
+
+export function Model(...fields) {
+  this.fields = {}
+  fields.forEach(f => {
+    const { name, constraints, test } = f;
+    this.fields[name] = { constraints, test };
+  });
+
+  this.test = obj => {
+    Object.keys(obj).forEach(name => this.fields[name].test(obj[name]));
+  }
 }

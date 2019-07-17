@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string, model } from './models';
+import { string, Model } from './models';
 
 export const tests = [
   stringFieldCreationTest,
@@ -8,6 +8,7 @@ export const tests = [
   stringFieldNotNullTest,
   stringFieldAlphabeticalTest,
   stringFieldConstrainTest,
+  modelCreationTest,
 ];
 
 function stringFieldCreationTest() {
@@ -135,10 +136,10 @@ function modelCreationTest() {
   try {
     let mustBeJuanCarlos = (name, val) => {
       if (val !== 'Juan Carlos')
-      throw new Error(`${name} must be Juan Carlos`);
+      throw new Error(`${name} must be "Juan Carlos"`);
     }
 
-    let cowboy = model(
+    let cowboy = new Model(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).constrain(mustBeJuanCarlos),
@@ -159,7 +160,7 @@ function modelCreationTest() {
         firstname: 'Rattlesnake Bill',
         lastname: 'Turner',
       }),
-      { message: 'firstname must be Juan Carlos' }
+      { message: 'firstname must be "Juan Carlos"' }
     );
   } catch (e) {
     return e;
