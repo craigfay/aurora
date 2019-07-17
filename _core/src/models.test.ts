@@ -3,12 +3,17 @@ import { string, integer, Model } from './models';
 
 export const tests = [
   stringFieldCreationTest,
+  stringFieldNotNullTest,
   stringFieldMinLengthTest,
   stringFieldMaxLengthTest,
-  stringFieldNotNullTest,
   stringFieldAlphabeticalTest,
   stringFieldConstrainTest,
+  stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
+  integerFieldNotNegativeTest,
+  integerFieldNotZeroTest,
+  integerFieldConstrainTest,
+  integerFieldChainableConstraintsTest,
   modelCreationTest,
 ];
 
@@ -20,11 +25,25 @@ function stringFieldCreationTest() {
     let field = string('catchphrase');
     assert(field.name == 'catchphrase');
     assert(Array.isArray(field.constraints));
-    assert(typeof field.minLength == 'function');
-    assert(typeof field.maxLength == 'function');
-    assert(typeof field.notNull == 'function');
-    assert(typeof field.alphabetical == 'function');
-    assert(typeof field.constrain == 'function');
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldNotNullTest() {
+  const description = `a notNull constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = string('catchphrase');
+    assert.doesNotThrow(() => field.test());
+    
+    field.notNull();
+    assert.throws(
+      () => field.test(),
+      { message: 'catchphrase must not be null' }
+    );
   } catch (e) {
     return e;
   }
@@ -66,25 +85,6 @@ function stringFieldMaxLengthTest() {
     assert.throws(
       () => field.test('howdy partner'),
       { message: 'catchphrase has a max length of 5' }
-    );
-  } catch (e) {
-    return e;
-  }
-}
-
-function stringFieldNotNullTest() {
-  const description = `a notNull constraint can be
-  applied to string fields, which can be checked with
-  field.test()`;
-
-  try {
-    let field = string('catchphrase');
-    assert.doesNotThrow(() => field.test());
-    
-    field.notNull();
-    assert.throws(
-      () => field.test(),
-      { message: 'catchphrase must not be null' }
     );
   } catch (e) {
     return e;
@@ -134,6 +134,25 @@ function stringFieldConstrainTest() {
   }
 }
 
+function stringFieldChainableConstraintsTest() {
+  const description = `all constraints available to string
+  fields are chainable`;
+
+  try {
+    assert.doesNotThrow(() => {
+      let field = string('mission')
+      .notNull()
+      .minLength(8)
+      .maxLength(32)
+      .alphabetical()
+      .constrain(x => x)
+    });
+
+  } catch (e) {
+    return e;
+  }
+}
+
 function integerFieldCreationTest() {
   const description = `integer fields can be created
   and posess the expected properties`;
@@ -142,6 +161,86 @@ function integerFieldCreationTest() {
     let field = integer('salary');
     assert(field.name == 'salary');
     assert(Array.isArray(field.constraints));
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldNotNegativeTest() {
+  const description = `a notNegative constraint can be
+  applied to integer fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = integer('debt');
+    assert.doesNotThrow(() => field.test(-5));
+    
+    field.notNegative();
+    assert.throws(
+      () => field.test(-5),
+      { message: 'debt must not be negative' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldNotZeroTest() {
+  const description = `a notZero constraint can be
+  applied to integer fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = integer('debt');
+    assert.doesNotThrow(() => field.test(0));
+    
+    field.notZero();
+    assert.throws(
+      () => field.test(0),
+      { message: 'debt must not be 0' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldConstrainTest() {
+  const description = `an arbitrary constraint function
+  can be applied to integer fields, which can be checked
+  with field.test()`;
+
+  try {
+    let field = integer('repetitions');
+    assert.doesNotThrow(() => field.test(7));
+
+    const divisibleByFour = (name, val) => {
+      if (val % 4 != 0)
+      throw new Error(`${name} must be divisible by four`);
+    }
+    
+    field.constrain(divisibleByFour);
+    assert.throws(
+      () => field.test(7),
+      { message: 'repetitions must be divisible by four' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldChainableConstraintsTest() {
+  const description = `all constraints available to integer
+  fields are chainable`;
+
+  try {
+    assert.doesNotThrow(() => {
+      let field = integer('goal')
+      .notNull()
+      .notNegative()
+      .notZero()
+      .constrain(x => x)
+    });
+
   } catch (e) {
     return e;
   }
