@@ -4,6 +4,7 @@ import { string } from './models';
 export const tests = [
   stringFieldCreationTest,
   stringFieldMaxLengthTest,
+  stringFieldNotNullTest,
 ];
 
 function stringFieldCreationTest() {
@@ -35,6 +36,25 @@ function stringFieldMaxLengthTest() {
     assert.throws(
       () => field.test('howdy partner'),
       { message: 'catchphrase has a max length of 5' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldNotNullTest() {
+  const description = `a notNull constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = string('catchphrase');
+    assert.doesNotThrow(() => field.test());
+    
+    field.notNull();
+    assert.throws(
+      () => field.test(),
+      { message: 'catchphrase must not be null' }
     );
   } catch (e) {
     return e;
