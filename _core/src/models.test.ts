@@ -260,7 +260,9 @@ function modelCreationTest() {
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).constrain(mustBeJuanCarlos),
-      string('lastname').maxLength(12).notNull()
+      string('lastname').maxLength(12).notNull(),
+      integer('age').notNull().notNegative().notZero(),
+      integer('kills').notNegative().notZero(),
     )
 
     assert.doesNotThrow(() => cowboy.test({
@@ -268,6 +270,8 @@ function modelCreationTest() {
         catchphrase: 'It\'s high noon',
         firstname: 'Juan Carlos',
         lastname: 'Riviera',
+        age: 46,
+        kills: 4,
       })
     );
 
@@ -276,6 +280,8 @@ function modelCreationTest() {
         catchphrase: 'Get along lil doggy',
         firstname: 'Rattlesnake Bill',
         lastname: 'Turner',
+        age: 37,
+        kills: 0,
       }),
       { message: 'firstname must be "Juan Carlos"' }
     );
