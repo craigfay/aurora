@@ -7,6 +7,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldNotNullTest,
   stringFieldAlphabeticalTest,
+  stringFieldConstrainTest,
 ];
 
 function stringFieldCreationTest() {
@@ -97,6 +98,30 @@ function stringFieldAlphabeticalTest() {
     assert.throws(
       () => field.test('Blink 182'),
       { message: 'catchphrase must only use alphabetical characters' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldConstrainTest() {
+  const description = `an arbitrary constraint function
+  can be applied to string fields, which can be checked
+  with field.test()`;
+
+  try {
+    let field = string('catchphrase');
+    assert.doesNotThrow(() => field.test('The Eagles'));
+
+    const noSpaces = (name, val) => {
+      if (val.includes(' '))
+      throw new Error(`${name} must not include spaces`);
+    }
+    
+    field.constrain(noSpaces);
+    assert.throws(
+      () => field.test('The Eagles'),
+      { message: 'catchphrase must not include spaces' }
     );
   } catch (e) {
     return e;

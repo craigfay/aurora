@@ -39,5 +39,9 @@ export function string(name) {
     })
   }
 
+  f.constrain = fn => {
+    f.constraints.push(val => fn(name, val));
+  }
+
   return f;
 }
