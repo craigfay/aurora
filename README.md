@@ -37,6 +37,8 @@ Resources:
 
 * [Templatizing Dockerfile](https://blog.dockbit.com/templating-your-dockerfile-like-a-boss-2a84a67d28e9)
 
+* [Automated Github Releases](https://developer.github.com/v3/repos/releases/#create-a-release)
+
 ## Todo
 * Add close() methods for db and cache
 * Allow shorthand HttpResponse construction
