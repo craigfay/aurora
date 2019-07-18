@@ -4,6 +4,7 @@ import { string, integer, Model } from './models';
 export const tests = [
   stringFieldCreationTest,
   stringFieldNotNullTest,
+  stringFieldLengthTest,
   stringFieldMinLengthTest,
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
@@ -44,6 +45,25 @@ function stringFieldNotNullTest() {
     assert.throws(
       () => field.test(),
       { message: 'catchphrase must not be null' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldLengthTest() {
+  const description = `a length constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = string('year');
+    assert.doesNotThrow(() => field.test('17544'));
+    
+    field.length(4);
+    assert.throws(
+      () => field.test('17544'),
+      { message: 'year must be exactly 4 characters long' }
     );
   } catch (e) {
     return e;

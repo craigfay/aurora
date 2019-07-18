@@ -11,6 +11,10 @@ const notNull = (name, val) => {
   if (val == null)
   throw new Error(`${name} must not be null`);
 }
+const length = (name, val, arg) => {
+  if (val.length != arg)
+  throw new Error(`${name} must be exactly ${arg} characters long`)
+}
 const minLength = (name, val, arg) => {
   if (val.length < arg)
   throw new Error(`${name} has a min length of ${arg}`)
@@ -38,6 +42,7 @@ export function string(name) {
   }
 
   f.notNull = () => f.constrain(notNull);
+  f.length = arg => f.constrain(length, arg);
   f.minLength = arg => f.constrain(minLength, arg)
   f.maxLength = arg => f.constrain(maxLength, arg)
   f.alphabetical = () => f.constrain(alphabetical)
