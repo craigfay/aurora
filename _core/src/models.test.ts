@@ -14,6 +14,7 @@ export const tests = [
   integerFieldCreationTest,
   integerFieldNotNegativeTest,
   integerFieldNotZeroTest,
+  integerFieldRangeTest,
   integerFieldConstrainTest,
   integerFieldChainableConstraintsTest,
   modelCreationTest,
@@ -238,6 +239,25 @@ function integerFieldNotZeroTest() {
     assert.throws(
       () => field.test(0),
       { message: 'debt must not be 0' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldRangeTest() {
+  const description = `a range constraint can be
+  applied to integer fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = integer('month');
+    assert.doesNotThrow(() => field.test(0));
+    
+    field.range(1, 12);
+    assert.throws(
+      () => field.test(0),
+      { message: 'month must be between 1 and 12' }
     );
   } catch (e) {
     return e;

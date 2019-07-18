@@ -59,19 +59,25 @@ const notZero = (name, val) => {
   if (val == 0)
   throw new Error(`${name} must not be 0`)
 }
+const range = (name, val, ...args) => {
+  const [min, max] = args;
+  if (val < min || val > max)
+  throw new Error(`${name} must be between ${min} and ${max}`)
+}
 
 export function integer(name) {
   let f: any = new Field(name);
   f.constraints.push(val => assert(val === null || Number.isInteger(val)));
 
-  f.constrain = fn => {
-    f.constraints.push(val => fn(name, val));
+  f.constrain = (fn, ...args) => {
+    f.constraints.push(val => fn(name, val, ...args));
     return f;
   }
 
   f.notNull = () => f.constrain(notNull);
   f.notNegative = () => f.constrain(notNegative);
   f.notZero = () => f.constrain(notZero);
+  f.range = (...args) => f.constrain(range, ...args)
 
   return f;
 }
