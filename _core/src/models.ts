@@ -46,38 +46,28 @@ export function string(name) {
   return f;
 }
 
+const notNegative = (name, val) => {
+  if (val < 0)
+  throw new Error(`${name} must not be negative`)
+}
+const notZero = (name, val) => {
+  if (val == 0)
+  throw new Error(`${name} must not be 0`)
+}
+
 export function integer(name) {
   let f: any = new Field(name);
   f.constraints.push(val => assert(val === null || Number.isInteger(val)));
-
-  f.notNull = () => {
-    f.constraints.push(val => {
-      if (val == null)
-      throw new Error(`${name} must not be null`);
-    })
-    return f;
-  }
-
-  f.notNegative = () => {
-    f.constraints.push(val => {
-      if (val < 0)
-      throw new Error(`${name} must not be negative`)
-    })
-    return f;
-  }
-
-  f.notZero = () => {
-    f.constraints.push(val => {
-      if (val == 0)
-      throw new Error(`${name} must not be 0`)
-    })
-    return f;
-  }
 
   f.constrain = fn => {
     f.constraints.push(val => fn(name, val));
     return f;
   }
+
+  f.notNull = () => f.constrain(notNull);
+  f.notNegative = () => f.constrain(notNegative);
+  f.notZero = () => f.constrain(notZero);
+
   return f;
 }
 
