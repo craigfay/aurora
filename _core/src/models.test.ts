@@ -8,6 +8,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
   stringFieldConstrainTest,
+  stringFieldNumericTest,
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
   integerFieldNotNegativeTest,
@@ -104,6 +105,25 @@ function stringFieldAlphabeticalTest() {
     assert.throws(
       () => field.test('Blink 182'),
       { message: 'catchphrase must only use alphabetical characters' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldNumericTest() {
+  const description = `a numeric constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = string('uuid');
+    assert.doesNotThrow(() => field.test('Scooby Doo'));
+    
+    field.numeric();
+    assert.throws(
+      () => field.test('Scooby Doo'),
+      { message: 'uuid must only use numeric characters' }
     );
   } catch (e) {
     return e;
@@ -240,7 +260,6 @@ function integerFieldChainableConstraintsTest() {
       .notZero()
       .constrain(x => x)
     });
-
   } catch (e) {
     return e;
   }

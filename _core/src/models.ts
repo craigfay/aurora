@@ -43,6 +43,14 @@ export function string(name) {
     return f;
   }
 
+  f.numeric = () => {
+    f.constraints.push(val => {
+      if (false == /^\d+$/.test(val))
+      throw new Error(`${name} must only use numeric characters`);
+    })
+    return f;
+  }
+
   f.constrain = fn => {
     f.constraints.push(val => fn(name, val));
     return f;
