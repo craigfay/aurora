@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { string, integer, Model } from './models';
-import { Migration, toKnex } from './migration';
+import { toKnex } from './migration';
 
 export const tests = [
   migrationFromModelsTest,
