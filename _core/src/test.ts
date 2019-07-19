@@ -30,6 +30,7 @@ async function testSuite() {
     ...require('./login.test').tests,
     ...require('./cache.test').tests,
     ...require('./models.test').tests,
+    ...require('./migration.test').tests,
   ];
   for (const test of allTests) {
     const result = await runWithTimer(test);

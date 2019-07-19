@@ -1,4 +1,4 @@
-import { strict as assert } from 'assert';
+import { enforceArgumentType } from './util';
 
 /**
  * Models can be used to define complex data structures
@@ -10,11 +10,13 @@ import { strict as assert } from 'assert';
  * See models.test.ts for examples of how Models are composed
  */
 
-export function Model(...fields) {
+export function Model(name:string, ...fields) {
+  enforceArgumentType('name', name, 'string');
+  this.name = name;
   this.fields = {}
   fields.forEach(f => {
-    const { name, constraints, test } = f;
-    this.fields[name] = { constraints, test };
+    const { name, ...rest } = f;
+    this.fields[name] = { ...rest };
   });
 
   this.test = obj => {
@@ -22,8 +24,12 @@ export function Model(...fields) {
   }
 }
 
+/**
+ * Used as a base class for concrete field types
+ * @param name
+ */
 function Field(name:string) {
-  assert(typeof name == 'string');
+  enforceArgumentType('name', name, 'string');
   this.name = name;
   this.constraints = [];
   this.test = (val=null) => this.constraints.forEach(c => c(name, val));
@@ -104,6 +110,7 @@ const integerRange = (...args) => function range(name, val) {
 
 export function string(name) {
   let f: any = new Field(name);
+  f.type = 'string'
   f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
   f.notNull = () => f.constrain(genericNotNull());
@@ -121,6 +128,7 @@ export function string(name) {
 
 export function integer(name) {
   let f: any = new Field(name);
+  f.type = 'integer';
   f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
   f.notNull = () => f.constrain(genericNotNull());

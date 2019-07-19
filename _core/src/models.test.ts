@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { enforceArgumentType } from './util';
 import { string, integer, Model } from './models';
 
 export const tests = [
@@ -316,6 +317,7 @@ function modelCreationTest() {
     }
 
     let cowboy = new Model(
+      'cowboy',
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).constrain(mustBeJuanCarlos),
