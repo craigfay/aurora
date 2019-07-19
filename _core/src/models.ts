@@ -4,7 +4,7 @@ function Field(name) {
   assert(typeof name == 'string');
   this.name = name;
   this.constraints = [];
-  this.test = (val=null) => this.constraints.forEach(c => c(val));
+  this.test = (val=null) => this.constraints.forEach(c => c.test(val));
 }
 
 const notNull = (name, val) => {
@@ -34,12 +34,19 @@ const numeric = (name, val) => {
 
 export function string(name) {
   let f: any = new Field(name);
-  f.constraints.push(val => assert(val === null || typeof val == 'string'));
 
   f.constrain = (fn, ...args) => {
-    f.constraints.push(val => fn(name, val, ...args));
+    f.constraints.push({
+      name: fn.name,
+      test: val => fn(name, val, ...args),
+    });
     return f;
   }
+
+  f.constrain(function type(name, val) {
+    if (val != null && typeof val != 'string')
+    throw new Error(`${name} must be a string. Received ${typeof val}`);
+  })
 
   f.notNull = () => f.constrain(notNull);
   f.length = arg => f.constrain(length, arg);
@@ -67,12 +74,19 @@ const range = (name, val, ...args) => {
 
 export function integer(name) {
   let f: any = new Field(name);
-  f.constraints.push(val => assert(val === null || Number.isInteger(val)));
 
   f.constrain = (fn, ...args) => {
-    f.constraints.push(val => fn(name, val, ...args));
+    f.constraints.push({
+      name: fn.name,
+      test: val => fn(name, val, ...args),
+    });
     return f;
   }
+
+  f.constrain(function type(name, val) {
+    if (val != null && !Number.isInteger(val))
+    throw new Error(`${name} must be an integer. Received ${typeof val}`);
+  })
 
   f.notNull = () => f.constrain(notNull);
   f.notNegative = () => f.constrain(notNegative);
