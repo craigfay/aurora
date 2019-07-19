@@ -22,7 +22,7 @@ export function Model(...fields) {
   }
 }
 
-function Field(name) {
+function Field(name:string) {
   assert(typeof name == 'string');
   this.name = name;
   this.constraints = [];
@@ -30,9 +30,18 @@ function Field(name) {
 }
 
 /**
+ * The constrain function attached to every field type
+ * which allows custom arbitrary constraints
+ * @param fn will receive (name, val) of a field, and maybe throw
+ */
+function constrain(fn) {
+  this.constraints.push(fn)
+  return this;
+}
+
+/**
  * Generic constraints that are available to multiple field types
  */
-
 const genericNotNull = () => function notNull(name, val) {
   if (val == null)
   throw new Error(`${name} must not be null`);
@@ -95,10 +104,7 @@ const integerRange = (...args) => function range(name, val) {
 
 export function string(name) {
   let f: any = new Field(name);
-  f.constrain = fn => {
-    f.constraints.push(fn)
-    return f;
-  }
+  f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
   f.notNull = () => f.constrain(genericNotNull());
   f.length = arg => f.constrain(stringLength(arg));
@@ -115,10 +121,7 @@ export function string(name) {
 
 export function integer(name) {
   let f: any = new Field(name);
-  f.constrain = fn => {
-    f.constraints.push(fn)
-    return f;
-  }
+  f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
   f.notNull = () => f.constrain(genericNotNull());
   f.notNegative = () => f.constrain(integerNotNegative());
