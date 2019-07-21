@@ -21,19 +21,3 @@ export function toKnex(model) {
   definition += ')};\n'
   return definition;
 }
-
-/**
- * Users Migration
- */
-const usersMigration = {
-  up: async db => {
-    return db.schema.createTable('users', (table) => {
-      table.increments();
-      table.string('username').unique().notNullable();
-      table.string('password').notNullable();
-    });
-  },
-  down: async db => {
-    return db.schema.dropTableIfExists('users');
-  }
-}
