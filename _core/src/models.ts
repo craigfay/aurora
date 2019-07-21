@@ -33,6 +33,7 @@ function Field(name:string) {
   this.name = name;
   this.tests = [];
   this.constraints = {};
+  this.constrain = constrain.bind(this);
   this.test = (val=null) => this.tests.forEach(c => c(name, val));
 }
 
@@ -110,10 +111,7 @@ export function constrain(fn) {
 export function string(name) {
   let f: any = new Field(name);
   f.constraints.type = 'string'
-
-  f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
-  f.constrain = constrain.bind(f);
 
   f.notNull = f.constrain(notNull)
   f.minLength = f.constrain(minLength);
@@ -130,10 +128,7 @@ export function string(name) {
 export function integer(name) {
   let f: any = new Field(name);
   f.constraints.type = 'integer';
-
-  f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
-  f.constrain = constrain.bind(f);
 
   f.notNull = f.constrain(notNull);
   f.notNegative = f.constrain(notNegative);
