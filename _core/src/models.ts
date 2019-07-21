@@ -97,21 +97,21 @@ const range = (arg) => (name, val) => {
  * The constrain function attached to every field type
  * which allows custom arbitrary constraints
  */
-export function constrainWithArg(fn) {
+function constrain(fn) {
+  this.tests.push(fn)
+  return this;
+}
+
+/**
+ * The constrainWithArg function attached to every field type
+ * which allows custom arbitrary constraints that take an argument
+ */
+function constrainWithArg(fn) {
   return (arg=true) => {
     this.constraints[fn.name] = arg;
     this.tests.push(fn(arg))
     return this;
   }
-}
-
-/**
- * The constrain function attached to every field type
- * which allows custom arbitrary constraints
- */
-export function constrain(fn) {
-  this.tests.push(fn)
-  return this;
 }
 
 /**
