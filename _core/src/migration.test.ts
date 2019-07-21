@@ -30,7 +30,7 @@ function migrationFromModelsTest() {
        * Although effect-less during Model.test()...
        * ...this function can be used to enforce uniquenes
        * ...inside a database table, becuase it will
-       * ...set a field.constraints.unique
+       * ...set a field.constraints.unique = true
        */
     };
 
@@ -50,8 +50,8 @@ function migrationFromModelsTest() {
         table.increments();
         table.string('name', 64).notNullable();
         table.string('description');
-        table.integer('price').notNullable();
-        table.integer('quantity');
+        table.integer('price').notNullable().unsigned();
+        table.integer('quantity').unsigned();
       )};`)
     )
 
