@@ -234,7 +234,7 @@ function integerFieldRangeTest() {
     let field = integer('month');
     assert.doesNotThrow(() => field.test(0));
     
-    field.range(1, 12);
+    field.range([1, 12]);
     assert.throws(
       () => field.test(0),
       { message: 'month must be between 1 and 12' }

@@ -95,8 +95,8 @@ const notZero = () => (name, val) => {
   if (val == 0)
   throw new Error(`${name} must not be 0`)
 }
-const range = (...args) => (name, val) => {
-  const [min, max] = args;
+const range = (arg) => (name, val) => {
+  const [min, max] = arg;
   if (val < min || val > max)
   throw new Error(`${name} must be between ${min} and ${max}`)
 }
@@ -134,11 +134,13 @@ export function string(name) {
 export function integer(name) {
   let f: any = new Field(name);
   f.flags.type = 'integer';
+
   f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
-  f.notNull = () => f.constrain(notNull());
-  f.notNegative = () => f.constrain(notNegative());
-  f.notZero = () => f.constrain(notZero());
-  f.range = (...args) => f.constrain(range(...args))
+
+  f.notNull = flagAndConstrain(f, notNull);
+  f.notNegative = flagAndConstrain(f, notNegative);
+  f.notZero = flagAndConstrain(f, notZero);
+  f.range = flagAndConstrain(f, range);
   return f;
 }
