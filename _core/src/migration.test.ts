@@ -31,9 +31,31 @@ function migrationFromModelsTest() {
       string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
       string('expirationDate').notNull().numeric().constrain(mmyy)
     )
+  
+    // Trim extraneous white space
+    const normalize = str => str.replace(/\s+/g, ' ').trim();
 
-    console.log(toKnex(products))
-    console.log(toKnex(paymentMethods))
+    assert.equal(
+      normalize(toKnex(products)),
+      normalize(`db.schema.createTable('products', table => {
+        table.increments();
+        table.string('name', 64).notNullable();
+        table.string('description');
+        table.integer('price').notNullable();
+        table.integer('quantity');
+      )};`)
+    )
+
+    assert.equal(
+      normalize(toKnex(paymentMethods)),
+      normalize(`db.schema.createTable('paymentMethods', table => {
+        table.increments();
+        table.string('accountHolder', 64).notNullable();
+        table.string('cardNumber', 16).notNullable();
+        table.string('expirationDate').notNullable();
+      )};`)
+    )
+
   } catch (e) {
     return e;
   }
