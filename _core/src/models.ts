@@ -31,9 +31,9 @@ export function Model(name:string, ...fields) {
 function Field(name:string) {
   enforceArgumentType('name', name, 'string');
   this.name = name;
-  this.constraints = [];
-  this.flags = {};
-  this.test = (val=null) => this.constraints.forEach(c => c(name, val));
+  this.tests = [];
+  this.constraints = {};
+  this.test = (val=null) => this.tests.forEach(c => c(name, val));
 }
 
 /**
@@ -97,7 +97,7 @@ const range = (arg) => (name, val) => {
 
 export function string(name) {
   let f: any = new Field(name);
-  f.flags.type = 'string'
+  f.constraints.type = 'string'
 
   f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
@@ -117,7 +117,7 @@ export function string(name) {
 
 export function integer(name) {
   let f: any = new Field(name);
-  f.flags.type = 'integer';
+  f.constraints.type = 'integer';
 
   f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
@@ -136,8 +136,8 @@ export function integer(name) {
  */
 export function constrain(fn) {
   return arg => {
-    this.flags[fn.name] = arg == undefined ? true : arg;
-    this.constraints.push(fn(arg))
+    this.constraints[fn.name] = arg == undefined ? true : arg;
+    this.tests.push(fn(arg))
     return this;
   }
 }

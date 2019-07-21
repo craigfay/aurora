@@ -26,7 +26,7 @@ function stringFieldCreationTest() {
   try {
     let field = string('catchphrase');
     assert(field.name == 'catchphrase');
-    assert(Array.isArray(field.constraints));
+    assert(Array.isArray(field.tests));
   } catch (e) {
     return e;
   }
@@ -181,7 +181,7 @@ function integerFieldCreationTest() {
   try {
     let field = integer('salary');
     assert(field.name == 'salary');
-    assert(Array.isArray(field.constraints));
+    assert(Array.isArray(field.tests));
   } catch (e) {
     return e;
   }
