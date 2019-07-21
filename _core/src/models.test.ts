@@ -8,6 +8,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
   stringFieldConstrainTest,
+  stringFieldConstrainWithArgTest,
   stringFieldNumericTest,
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
@@ -144,11 +145,35 @@ function stringFieldConstrainTest() {
       if (val.includes(' '))
       throw new Error(`${name} must not include spaces`);
     }
-    
+
     field.constrain(noSpaces);
     assert.throws(
       () => field.test('The Eagles'),
       { message: 'catchphrase must not include spaces' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldConstrainWithArgTest() {
+  const description = `an arbitrary constraint function
+  can be applied to string fields that accepts an arg, and
+  can be checked with field.test()`;
+
+  try {
+    let field = string('password');
+    assert.doesNotThrow(() => field.test('try_and_break_this'));
+
+    const mustContain = arg => (name, val) => {
+      if (!val.includes(arg))
+      throw new Error(`${name} must contain "${arg}"`);
+    }
+
+    field.constrainWithArg(mustContain)('!');
+    assert.throws(
+      () => field.test('try_and_break_this'),
+      { message: 'password must contain "!"' }
     );
   } catch (e) {
     return e;
