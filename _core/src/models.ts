@@ -92,6 +92,18 @@ const range = (arg) => (name, val) => {
 }
 
 /**
+ * The constrain function attached to every field type
+ * which allows custom arbitrary constraints
+ */
+export function constrain(fn) {
+  return (arg=true) => {
+    this.constraints[fn.name] = arg;
+    this.tests.push(fn(arg))
+    return this;
+  }
+}
+
+/**
  * String Field
  */
 
@@ -128,16 +140,4 @@ export function integer(name) {
   f.notZero = f.constrain(notZero);
   f.range = f.constrain(range);
   return f;
-}
-
-/**
- * The constrain function attached to every field type
- * which allows custom arbitrary constraints
- */
-export function constrain(fn) {
-  return arg => {
-    this.constraints[fn.name] = arg == undefined ? true : arg;
-    this.tests.push(fn(arg))
-    return this;
-  }
 }
