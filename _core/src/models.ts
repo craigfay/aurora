@@ -94,6 +94,15 @@ const range = (arg) => (name, val) => {
 }
 
 /**
+ * Constraints available to boolean fields
+ */
+
+const booleanFieldType = () => (name, val) => {
+  if (val != null && typeof val != 'boolean')
+  throw new Error(`${name} must be a boolean. Received ${typeof val}`);
+}
+
+/**
  * The constrain function attached to every field type
  * which allows custom arbitrary constraints
  */
@@ -144,5 +153,18 @@ export function integer(name) {
   f.notNegative = f.constrainWithArg(notNegative);
   f.notZero = f.constrainWithArg(notZero);
   f.range = f.constrainWithArg(range);
+  return f;
+}
+
+/**
+ * Integer Field
+ */
+
+export function boolean(name) {
+  let f: any = new Field(name);
+  f.constraints.type = 'boolean';
+  f.constrain(booleanFieldType());
+
+  f.notNull = f.constrainWithArg(notNull);
   return f;
 }

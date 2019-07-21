@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string, integer, Model } from './models';
+import { string, integer, boolean, Model } from './models';
 
 export const tests = [
   stringFieldCreationTest,
@@ -18,6 +18,11 @@ export const tests = [
   integerFieldConstrainTest,
   integerFieldConstrainWithArgTest,
   integerFieldChainableConstraintsTest,
+  booleanFieldCreationTest,
+  booleanFieldNotNullTest,
+  booleanFieldConstrainTest,
+  booleanFieldConstrainWithArgTest,
+  booleanFieldChainableConstraintsTest,
   modelCreationTest,
 ];
 
@@ -329,6 +334,112 @@ function integerFieldChainableConstraintsTest() {
       .notNegative()
       .notZero()
       .constrain(x => x)
+    });
+  } catch (e) {
+    return e;
+  }
+}
+
+function booleanFieldCreationTest() {
+  const description = `boolean fields can be created
+  and posess the expected properties`;
+
+  try {
+    let field = boolean('freeShipping');
+    assert(field.name == 'freeShipping');
+    assert(Array.isArray(field.tests));
+  } catch (e) {
+    return e;
+  }
+}
+
+function booleanFieldNotNullTest() {
+  const description = `a notNull constraint can be
+  applied to boolean fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = boolean('oldEnough');
+    assert.doesNotThrow(() => field.test());
+    
+    field.notNull();
+    assert.throws(
+      () => field.test(),
+      { message: 'oldEnough must not be null' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function booleanFieldConstrainTest() {
+  const description = `an arbitrary constraint function
+  can be applied to integer fields, which can be checked
+  with field.test()`;
+
+  try {
+    let field = boolean('repeats');
+    assert.doesNotThrow(() => field.test(true));
+
+    const andFalse = (name, val) => {
+      if (!(val && false))
+      throw new Error(`${name} and false must both be true`);
+    }
+    
+    field.constrain(andFalse);
+    assert.throws(
+      () => field.test(true),
+      { message: 'repeats and false must both be true' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function booleanFieldConstrainWithArgTest() {
+  const description = `an arbitrary constraint function
+  can be applied to boolean fields that accepts an arg, and
+  can be checked with field.test()`;
+
+  try {
+    let field = boolean('lucky');
+    assert.doesNotThrow(() => field.test(true));
+
+    const and = arg => (name, val) => {
+      if (!(arg && val)) 
+      throw new Error(`${name} and ${arg} are not both true`);
+    }
+
+    field.constrainWithArg(and)(false);
+    assert.throws(
+      () => field.test(true),
+      { message: 'lucky and false are not both true' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function booleanFieldChainableConstraintsTest() {
+  const description = `all constraints available to boolean
+  fields are chainable`;
+
+  try {
+    const andFalse = (name, val) => {
+      if (!(val && false))
+      throw new Error(`${name} and false must both be true`);
+    }
+
+    const and = arg => (name, val) => {
+      if (!(arg && val)) 
+      throw new Error(`${name} and ${arg} are not both true`);
+    }
+
+    assert.doesNotThrow(() => {
+      let field = boolean('success')
+      .notNull()
+      .constrain(andFalse)
+      .constrainWithArg(and)(true)
     });
   } catch (e) {
     return e;
