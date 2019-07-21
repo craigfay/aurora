@@ -37,16 +37,6 @@ function Field(name:string) {
 }
 
 /**
- * The constrain function attached to every field type
- * which allows custom arbitrary constraints
- * @param fn will receive (name, val) of a field, and maybe throw
- */
-function constrain(fn) {
-  this.constraints.push(fn)
-  return this;
-}
-
-/**
  * Generic constraints that are available to multiple field types
  */
 const notNull = () => (name, val) => {
@@ -105,26 +95,19 @@ const range = (arg) => (name, val) => {
  * String Field
  */
 
-function flagAndConstrain(fn) {
-  return function(arg) {
-    this.flags[fn.name] = arg == undefined ? true : arg;
-    return this.constrain(fn(arg));
-  }
-}
-
 export function string(name) {
   let f: any = new Field(name);
   f.flags.type = 'string'
 
   f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
-  const flag = flagAndConstrain.bind(f);
+  f.constrain = constrain.bind(f);
 
-  f.notNull = flag(notNull)
-  f.minLength = flag( minLength);
-  f.maxLength = flag(maxLength);
-  f.alphabetical = flag(alphabetical)
-  f.numeric = flag(numeric)
+  f.notNull = f.constrain(notNull)
+  f.minLength = f.constrain(minLength);
+  f.maxLength = f.constrain(maxLength);
+  f.alphabetical = f.constrain(alphabetical)
+  f.numeric = f.constrain(numeric)
   return f;
 }
 
@@ -138,11 +121,23 @@ export function integer(name) {
 
   f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
-  const flag = flagAndConstrain.bind(f);
+  f.constrain = constrain.bind(f);
 
-  f.notNull = flag(notNull);
-  f.notNegative = flag(notNegative);
-  f.notZero = flag(notZero);
-  f.range = flag(range);
+  f.notNull = f.constrain(notNull);
+  f.notNegative = f.constrain(notNegative);
+  f.notZero = f.constrain(notZero);
+  f.range = f.constrain(range);
   return f;
+}
+
+/**
+ * The constrain function attached to every field type
+ * which allows custom arbitrary constraints
+ */
+export function constrain(fn) {
+  return arg => {
+    this.flags[fn.name] = arg == undefined ? true : arg;
+    this.constraints.push(fn(arg))
+    return this;
+  }
 }

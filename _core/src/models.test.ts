@@ -140,12 +140,12 @@ function stringFieldConstrainTest() {
     let field = string('catchphrase');
     assert.doesNotThrow(() => field.test('The Eagles'));
 
-    const noSpaces = (name, val) => {
+    const noSpaces = () => (name, val) => {
       if (val.includes(' '))
       throw new Error(`${name} must not include spaces`);
     }
     
-    field.constrain(noSpaces);
+    field.constrain(noSpaces)();
     assert.throws(
       () => field.test('The Eagles'),
       { message: 'catchphrase must not include spaces' }
@@ -166,7 +166,7 @@ function stringFieldChainableConstraintsTest() {
       .minLength(8)
       .maxLength(32)
       .alphabetical()
-      .constrain(x => x)
+      .constrain(x => x)()
     });
 
   } catch (e) {
@@ -253,12 +253,12 @@ function integerFieldConstrainTest() {
     let field = integer('repetitions');
     assert.doesNotThrow(() => field.test(7));
 
-    const divisibleByFour = (name, val) => {
+    const divisibleByFour = () => (name, val) => {
       if (val % 4 != 0)
       throw new Error(`${name} must be divisible by four`);
     }
     
-    field.constrain(divisibleByFour);
+    field.constrain(divisibleByFour)();
     assert.throws(
       () => field.test(7),
       { message: 'repetitions must be divisible by four' }
@@ -278,7 +278,7 @@ function integerFieldChainableConstraintsTest() {
       .notNull()
       .notNegative()
       .notZero()
-      .constrain(x => x)
+      .constrain(x => x)()
     });
   } catch (e) {
     return e;
@@ -290,7 +290,7 @@ function modelCreationTest() {
   from a list of fields`;
 
   try {
-    let mustBeJuanCarlos = (name, val) => {
+    let mustBeJuanCarlos = () => (name, val) => {
       if (val !== 'Juan Carlos')
       throw new Error(`${name} must be "Juan Carlos"`);
     }
@@ -299,7 +299,7 @@ function modelCreationTest() {
       'cowboy',
       string('birthplace'),
       string('catchphrase').notNull(),
-      string('firstname').minLength(1).constrain(mustBeJuanCarlos),
+      string('firstname').minLength(1).constrain(mustBeJuanCarlos)(),
       string('lastname').maxLength(12).notNull(),
       integer('age').notNull().notNegative().notZero(),
       integer('kills').notNegative().notZero(),

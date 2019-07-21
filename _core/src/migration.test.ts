@@ -19,20 +19,23 @@ function migrationFromModelsTest() {
       integer('quantity').notNegative(),
     )
 
-    const mmyy = (name, val) => {
+    const mmyy = arg => (name, val) => {
       const [mm, yy] = val.split(/../g).map(parseInt);
       if (0 > mm || 12 < mm)
       throw new Error(`${name} must be in mmyy format`);
     }
 
+    // Empty Constraint
+    const required = arg => () => {};
+
     const paymentMethods = new Model(
       'paymentMethods',
-      string('accountHolder').notNull().maxLength(64),
+      string('accountHolder').notNull().maxLength(64).constrain(required)(),
       string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
-      string('expirationDate').notNull().numeric().constrain(mmyy)
+      string('expirationDate').notNull().numeric().constrain(mmyy)(),
     )
-  
-    // Trim extraneous white space
+
+    // Remove extraneous white space
     const normalize = str => str.replace(/\s+/g, ' ').trim();
 
     assert.equal(
