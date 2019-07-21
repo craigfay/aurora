@@ -57,4 +57,3 @@ Resources:
 * How and when should migration/seeding be performed?
 * What's the best way to dependency-invert knex?
 * What tools are available for automated semantic versioning?
-* What is the best way to retain constraint arguments for model fields?
