@@ -105,10 +105,10 @@ const range = (arg) => (name, val) => {
  * String Field
  */
 
-function flagAndConstrain(f, fn) {
+function flagAndConstrain(fn) {
   return function(arg) {
-    f.flags[fn.name] = arg == undefined ? true : arg;
-    return f.constrain(fn(arg));
+    this.flags[fn.name] = arg == undefined ? true : arg;
+    return this.constrain(fn(arg));
   }
 }
 
@@ -118,12 +118,13 @@ export function string(name) {
 
   f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
+  const flag = flagAndConstrain.bind(f);
 
-  f.notNull = flagAndConstrain(f, notNull)
-  f.minLength = flagAndConstrain(f, minLength);
-  f.maxLength = flagAndConstrain(f, maxLength);
-  f.alphabetical = flagAndConstrain(f, alphabetical)
-  f.numeric = flagAndConstrain(f, numeric)
+  f.notNull = flag(notNull)
+  f.minLength = flag( minLength);
+  f.maxLength = flag(maxLength);
+  f.alphabetical = flag(alphabetical)
+  f.numeric = flag(numeric)
   return f;
 }
 
@@ -137,10 +138,11 @@ export function integer(name) {
 
   f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
+  const flag = flagAndConstrain.bind(f);
 
-  f.notNull = flagAndConstrain(f, notNull);
-  f.notNegative = flagAndConstrain(f, notNegative);
-  f.notZero = flagAndConstrain(f, notZero);
-  f.range = flagAndConstrain(f, range);
+  f.notNull = flag(notNull);
+  f.notNegative = flag(notNegative);
+  f.notZero = flag(notZero);
+  f.range = flag(range);
   return f;
 }
