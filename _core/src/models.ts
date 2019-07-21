@@ -32,6 +32,7 @@ function Field(name:string) {
   enforceArgumentType('name', name, 'string');
   this.name = name;
   this.constraints = [];
+  this.args = {};
   this.test = (val=null) => this.constraints.forEach(c => c(name, val));
 }
 
@@ -60,10 +61,6 @@ const genericNotNull = () => function notNull(name, val) {
 const stringFieldType = () => function fieldType(name, val) {
   if (val != null && typeof val != 'string')
   throw new Error(`${name} must be a string. Received ${typeof val}`);
-}
-const stringLength = arg => function length(name, val) {
-  if (val.length != arg)
-  throw new Error(`${name} must be exactly ${arg} characters long`)
 }
 const stringMinLength = arg => function minLength(name, val) {
   if (val.length < arg)
@@ -114,9 +111,16 @@ export function string(name) {
   f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
   f.notNull = () => f.constrain(genericNotNull());
-  f.length = arg => f.constrain(stringLength(arg));
-  f.minLength = arg => f.constrain(stringMinLength(arg));
-  f.maxLength = arg => f.constrain(stringMaxLength(arg));
+
+  f.minLength = arg => {
+    f.args.minLength = arg;
+    return f.constrain(stringMinLength(arg));
+  }
+  f.maxLength = arg => {
+    f.args.maxLength = arg;
+    return f.constrain(stringMaxLength(arg));
+  }
+  
   f.alphabetical = () => f.constrain(stringAlphabetical())
   f.numeric = () => f.constrain(stringNumeric())
   return f;

@@ -28,9 +28,10 @@ function migrationFromModelsTest() {
     const paymentMethods = new Model(
       'paymentMethods',
       string('accountHolder').notNull().maxLength(64),
-      string('cardNumber').notNull().numeric().length(16),
-      string('expirationDate').notNull().numeric().length(4).constrain(mmyy)
+      string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
+      string('expirationDate').notNull().numeric().constrain(mmyy)
     )
+
     toKnex(products)
     toKnex(paymentMethods)
   } catch (e) {
