@@ -1,6 +1,10 @@
 import { Model } from './models';
 import * as knex from 'knex';
 
+/**
+ * Experimental: Build knex table definition from Model
+ * @param model
+ */
 export function toKnex(model) {
   const { name, fields } = model;
 
@@ -9,29 +13,15 @@ export function toKnex(model) {
   definition += `  table.increments();\n`
 
   for (const name in fields) {
-    const { type, constraints } = fields[name];
-    definition += `  table.${type}('${name}')`
-    // notNull
-    if (constraints.find(c => c.name == 'notNull')) {
+    const { type, notNull, maxLength } = fields[name].flags;
+    definition += `  table.${type}('${name}'${maxLength ? `, ${maxLength}` : ''})`
+    if (notNull) {
       definition += '.notNullable()'
     }
     definition += ';\n';
   }
   definition += ')};\n'
   return definition;
-}
-
-function fromModels(...models)  {
-  
-  const tableDefinitions = models.map(toKnex)
-
-  const up = async db => {
-    db.schema.createTable()
-  }
-}
-
-export const Migration = {
-  fromModels,
 }
 
 /**

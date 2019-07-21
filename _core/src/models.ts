@@ -32,7 +32,7 @@ function Field(name:string) {
   enforceArgumentType('name', name, 'string');
   this.name = name;
   this.constraints = [];
-  this.args = {};
+  this.flags = {};
   this.test = (val=null) => this.constraints.forEach(c => c(name, val));
 }
 
@@ -49,7 +49,7 @@ function constrain(fn) {
 /**
  * Generic constraints that are available to multiple field types
  */
-const genericNotNull = () => function notNull(name, val) {
+const notNull = () => (name, val) => {
   if (val == null)
   throw new Error(`${name} must not be null`);
 }
@@ -62,19 +62,19 @@ const stringFieldType = () => (name, val) => {
   if (val != null && typeof val != 'string')
   throw new Error(`${name} must be a string. Received ${typeof val}`);
 }
-const stringMinLength = arg => (name, val) => {
+const minLength = arg => (name, val) => {
   if (val.length < arg)
   throw new Error(`${name} has a min length of ${arg}`)
 }
-const stringMaxLength = arg => (name, val) => {
+const maxLength = arg => (name, val) => {
   if (val.length > arg)
   throw new Error(`${name} has a max length of ${arg}`)
 }
-const stringAlphabetical = () => (name, val) => {
+const alphabetical = () => (name, val) => {
   if (false == /^[a-zA-Z]+$/.test(val))
   throw new Error(`${name} must only use alphabetical characters`);
 }
-const stringNumeric = () => (name, val) => {
+const numeric = () => (name, val) => {
   if (false == /^\d+$/.test(val))
   throw new Error(`${name} must only use numeric characters`);
 }
@@ -87,15 +87,15 @@ const integerFieldType = () => (name, val) => {
   if (val != null && !Number.isInteger(val))
   throw new Error(`${name} must be an integer. Received ${typeof val}`);
 }
-const integerNotNegative = () => (name, val) => {
+const notNegative = () => (name, val) => {
   if (val < 0)
   throw new Error(`${name} must not be negative`)
 }
-const integerNotZero = () => (name, val) => {
+const notZero = () => (name, val) => {
   if (val == 0)
   throw new Error(`${name} must not be 0`)
 }
-const integerRange = (...args) => (name, val) => {
+const range = (...args) => (name, val) => {
   const [min, max] = args;
   if (val < min || val > max)
   throw new Error(`${name} must be between ${min} and ${max}`)
@@ -105,25 +105,25 @@ const integerRange = (...args) => (name, val) => {
  * String Field
  */
 
+function flagAndConstrain(f, fn) {
+  return function(arg) {
+    f.flags[fn.name] = arg == undefined ? true : arg;
+    return f.constrain(fn(arg));
+  }
+}
+
 export function string(name) {
   let f: any = new Field(name);
-  f.type = 'string'
+  f.flags.type = 'string'
+
   f.constrain = constrain.bind(f);
   f.constrain(stringFieldType());
-  f.notNull = () => f.constrain(genericNotNull());
 
-  // Length constraint args are necessary for database table creation
-  f.minLength = arg => {
-    f.args.minLength = arg;
-    return f.constrain(stringMinLength(arg));
-  }
-  f.maxLength = arg => {
-    f.args.maxLength = arg;
-    return f.constrain(stringMaxLength(arg));
-  }
-  
-  f.alphabetical = () => f.constrain(stringAlphabetical())
-  f.numeric = () => f.constrain(stringNumeric())
+  f.notNull = flagAndConstrain(f, notNull)
+  f.minLength = flagAndConstrain(f, minLength);
+  f.maxLength = flagAndConstrain(f, maxLength);
+  f.alphabetical = flagAndConstrain(f, alphabetical)
+  f.numeric = flagAndConstrain(f, numeric)
   return f;
 }
 
@@ -133,12 +133,12 @@ export function string(name) {
 
 export function integer(name) {
   let f: any = new Field(name);
-  f.type = 'integer';
+  f.flags.type = 'integer';
   f.constrain = constrain.bind(f);
   f.constrain(integerFieldType());
-  f.notNull = () => f.constrain(genericNotNull());
-  f.notNegative = () => f.constrain(integerNotNegative());
-  f.notZero = () => f.constrain(integerNotZero());
-  f.range = (...args) => f.constrain(integerRange(...args))
+  f.notNull = () => f.constrain(notNull());
+  f.notNegative = () => f.constrain(notNegative());
+  f.notZero = () => f.constrain(notZero());
+  f.range = (...args) => f.constrain(range(...args))
   return f;
 }

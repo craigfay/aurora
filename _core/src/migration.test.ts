@@ -32,8 +32,8 @@ function migrationFromModelsTest() {
       string('expirationDate').notNull().numeric().constrain(mmyy)
     )
 
-    toKnex(products)
-    toKnex(paymentMethods)
+    console.log(toKnex(products))
+    console.log(toKnex(paymentMethods))
   } catch (e) {
     return e;
   }
