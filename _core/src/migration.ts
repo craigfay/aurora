@@ -15,9 +15,7 @@ export function toKnex(model) {
   for (const name in fields) {
     const { type, notNull, maxLength } = fields[name].flags;
     definition += `  table.${type}('${name}'${maxLength ? `, ${maxLength}` : ''})`
-    if (notNull) {
-      definition += '.notNullable()'
-    }
+    definition += notNull ? '.notNullable()' : ''
     definition += ';\n';
   }
   definition += ')};\n'
