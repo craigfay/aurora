@@ -16,6 +16,7 @@ export const tests = [
   integerFieldNotZeroTest,
   integerFieldRangeTest,
   integerFieldConstrainTest,
+  integerFieldConstrainWithArgTest,
   integerFieldChainableConstraintsTest,
   modelCreationTest,
 ];
@@ -287,6 +288,30 @@ function integerFieldConstrainTest() {
     assert.throws(
       () => field.test(7),
       { message: 'repetitions must be divisible by four' }
+    );
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldConstrainWithArgTest() {
+  const description = `an arbitrary constraint function
+  can be applied to integer fields that accepts an arg, and
+  can be checked with field.test()`;
+
+  try {
+    let field = integer('luckyNumber');
+    assert.doesNotThrow(() => field.test(15));
+
+    const divisibleBy = arg => (name, val) => {
+      if (val % arg != 0) 
+      throw new Error(`${name} must be divisible by ${arg}`);
+    }
+
+    field.constrainWithArg(divisibleBy)(6);
+    assert.throws(
+      () => field.test(15),
+      { message: 'luckyNumber must be divisible by 6' }
     );
   } catch (e) {
     return e;
