@@ -34,6 +34,7 @@ function Field(name:string) {
   this.tests = [];
   this.constraints = {};
   this.constrain = constrain.bind(this);
+  this.constrainWithArg = constrainWithArg.bind(this);
   this.test = (val=null) => this.tests.forEach(c => c(name, val));
 }
 
@@ -96,12 +97,21 @@ const range = (arg) => (name, val) => {
  * The constrain function attached to every field type
  * which allows custom arbitrary constraints
  */
-export function constrain(fn) {
+export function constrainWithArg(fn) {
   return (arg=true) => {
     this.constraints[fn.name] = arg;
     this.tests.push(fn(arg))
     return this;
   }
+}
+
+/**
+ * The constrain function attached to every field type
+ * which allows custom arbitrary constraints
+ */
+export function constrain(fn) {
+  this.tests.push(fn)
+  return this;
 }
 
 /**
@@ -113,11 +123,11 @@ export function string(name) {
   f.constraints.type = 'string'
   f.constrain(stringFieldType());
 
-  f.notNull = f.constrain(notNull)
-  f.minLength = f.constrain(minLength);
-  f.maxLength = f.constrain(maxLength);
-  f.alphabetical = f.constrain(alphabetical)
-  f.numeric = f.constrain(numeric)
+  f.notNull = f.constrainWithArg(notNull)
+  f.minLength = f.constrainWithArg(minLength);
+  f.maxLength = f.constrainWithArg(maxLength);
+  f.alphabetical = f.constrainWithArg(alphabetical)
+  f.numeric = f.constrainWithArg(numeric)
   return f;
 }
 
@@ -130,9 +140,9 @@ export function integer(name) {
   f.constraints.type = 'integer';
   f.constrain(integerFieldType());
 
-  f.notNull = f.constrain(notNull);
-  f.notNegative = f.constrain(notNegative);
-  f.notZero = f.constrain(notZero);
-  f.range = f.constrain(range);
+  f.notNull = f.constrainWithArg(notNull);
+  f.notNegative = f.constrainWithArg(notNegative);
+  f.notZero = f.constrainWithArg(notZero);
+  f.range = f.constrainWithArg(range);
   return f;
 }
