@@ -12,6 +12,7 @@ export const tests = [
   stringFieldNumericTest,
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
+  integerFieldNotNullTest,
   integerFieldNotNegativeTest,
   integerFieldNotZeroTest,
   integerFieldRangeTest,
@@ -213,6 +214,25 @@ function integerFieldCreationTest() {
     let field = integer('salary');
     assert(field.name == 'salary');
     assert(Array.isArray(field.tests));
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldNotNullTest() {
+  const description = `a notNull constraint can be
+  applied to integer fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = integer('months');
+    assert.doesNotThrow(() => field.test());
+    
+    field.notNull();
+    assert.throws(
+      () => field.test(),
+      { message: 'months must not be null' }
+    );
   } catch (e) {
     return e;
   }
