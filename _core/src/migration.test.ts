@@ -25,12 +25,18 @@ function migrationFromModelsTest() {
       throw new Error(`${name} must be in mmyy format`);
     }
 
-    // Empty Constraint
-    const required = arg => () => {};
+    const unique = arg => (name, val) => {
+      /**
+       * Although effect-less during Model.test()...
+       * ...this function can be used to enforce uniquenes
+       * ...inside a database table, becuase it will
+       * ...set a field.constraints.unique
+       */
+    };
 
     const paymentMethods = new Model(
       'paymentMethods',
-      string('accountHolder').notNull().maxLength(64).constrainWithArg(required)(),
+      string('accountHolder').notNull().maxLength(64).constrainWithArg(unique)(),
       string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
       string('expirationDate').notNull().numeric().constrain(mmyy),
     )
@@ -53,7 +59,7 @@ function migrationFromModelsTest() {
       normalize(toKnex(paymentMethods)),
       normalize(`db.schema.createTable('paymentMethods', table => {
         table.increments();
-        table.string('accountHolder', 64).notNullable();
+        table.string('accountHolder', 64).notNullable().unique();
         table.string('cardNumber', 16).notNullable();
         table.string('expirationDate').notNullable();
       )};`)

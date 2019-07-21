@@ -13,9 +13,10 @@ export function toKnex(model) {
   definition += `  table.increments();\n`
 
   for (const name in fields) {
-    const { type, notNull, maxLength } = fields[name].constraints;
+    const { type, notNull, maxLength, unique } = fields[name].constraints;
     definition += `  table.${type}('${name}'${maxLength ? `, ${maxLength}` : ''})`
     definition += notNull ? '.notNullable()' : ''
+    definition += unique ? '.unique()' : ''
     definition += ';\n';
   }
   definition += ')};\n'
