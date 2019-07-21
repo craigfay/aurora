@@ -58,23 +58,23 @@ const genericNotNull = () => function notNull(name, val) {
  * Constraints available to string fields
  */
 
-const stringFieldType = () => function fieldType(name, val) {
+const stringFieldType = () => (name, val) => {
   if (val != null && typeof val != 'string')
   throw new Error(`${name} must be a string. Received ${typeof val}`);
 }
-const stringMinLength = arg => function minLength(name, val) {
+const stringMinLength = arg => (name, val) => {
   if (val.length < arg)
   throw new Error(`${name} has a min length of ${arg}`)
 }
-const stringMaxLength = arg => function maxLength(name, val) {
+const stringMaxLength = arg => (name, val) => {
   if (val.length > arg)
   throw new Error(`${name} has a max length of ${arg}`)
 }
-const stringAlphabetical = () =>  function alphabetical(name, val) {
+const stringAlphabetical = () => (name, val) => {
   if (false == /^[a-zA-Z]+$/.test(val))
   throw new Error(`${name} must only use alphabetical characters`);
 }
-const stringNumeric = () => function numeric(name, val) {
+const stringNumeric = () => (name, val) => {
   if (false == /^\d+$/.test(val))
   throw new Error(`${name} must only use numeric characters`);
 }
@@ -83,19 +83,19 @@ const stringNumeric = () => function numeric(name, val) {
  * Constraints available to integer fields
  */
 
-const integerFieldType = () => function fieldType(name, val) {
+const integerFieldType = () => (name, val) => {
   if (val != null && !Number.isInteger(val))
   throw new Error(`${name} must be an integer. Received ${typeof val}`);
 }
-const integerNotNegative = () => function notNegative(name, val) {
+const integerNotNegative = () => (name, val) => {
   if (val < 0)
   throw new Error(`${name} must not be negative`)
 }
-const integerNotZero = () => function notZero(name, val) {
+const integerNotZero = () => (name, val) => {
   if (val == 0)
   throw new Error(`${name} must not be 0`)
 }
-const integerRange = (...args) => function range(name, val) {
+const integerRange = (...args) => (name, val) => {
   const [min, max] = args;
   if (val < min || val > max)
   throw new Error(`${name} must be between ${min} and ${max}`)
@@ -112,6 +112,7 @@ export function string(name) {
   f.constrain(stringFieldType());
   f.notNull = () => f.constrain(genericNotNull());
 
+  // Length constraint args are necessary for database table creation
   f.minLength = arg => {
     f.args.minLength = arg;
     return f.constrain(stringMinLength(arg));
