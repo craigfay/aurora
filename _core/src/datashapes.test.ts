@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string, integer, boolean, Model } from './models';
+import { string, integer, boolean, DataShape } from './datashapes';
 
 export const tests = [
   stringFieldCreationTest,
@@ -21,7 +21,7 @@ export const tests = [
   booleanFieldNotNullTest,
   booleanFieldMustTest,
   booleanFieldChainableConstraintsTest,
-  modelCreationTest,
+  dataShapeCreationTest,
 ];
 
 function stringFieldCreationTest() {
@@ -391,7 +391,7 @@ function booleanFieldChainableConstraintsTest() {
   }
 }
 
-function modelCreationTest() {
+function dataShapeCreationTest() {
   const description = `Models can be created
   from a list of fields`;
 
@@ -401,7 +401,7 @@ function modelCreationTest() {
       throw new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = new Model(
+    let cowboy = new DataShape(
       'cowboy',
       string('birthplace'),
       string('catchphrase').notNull(),

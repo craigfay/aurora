@@ -1,12 +1,12 @@
-import { Model } from './models';
+import { DataShape } from './datashapes';
 import * as knex from 'knex';
 
 /**
- * Experimental: Build knex table definition from Model
- * @param model
+ * Experimental: Build knex table definition from DataShape
+ * @param DataShape
  */
-export function toKnex(model) {
-  const { name, fields } = model;
+export function toKnex(DataShape) {
+  const { name, fields } = DataShape;
 
   let definition = '';
   definition += `db.schema.createTable('${name}', table => {\n`

@@ -57,3 +57,4 @@ Resources:
 * How and when should migration/seeding be performed?
 * What's the best way to dependency-invert knex?
 * What tools are available for automated semantic versioning?
+* What's a better interface than DataShape.test(), and how should you create instances of Models?

@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string, integer, Model } from './models';
+import { string, integer, DataShape } from './datashapes';
 import { toKnex } from './migration';
 
 export const tests = [
@@ -15,7 +15,7 @@ function migrationFromModelsTest() {
 
   try {
     /**
-     * Although effect-less during Model.test()
+     * Although effect-less during DataShape.test()
      * these functions will set properties on field.constraints
      * that can be checked later by the code that creates table definition
      */
@@ -26,7 +26,7 @@ function migrationFromModelsTest() {
       // ...
     };
 
-    const products = new Model(
+    const products = new DataShape(
       'products',
       string('name').notNull().maxLength(64),
       string('description'),
@@ -34,14 +34,14 @@ function migrationFromModelsTest() {
       integer('quantity').notNegative(),
     )
 
-    const paymentMethods = new Model(
+    const paymentMethods = new DataShape(
       'paymentMethods',
       integer('customerId').notNull().must(references)('customers.id'),
       string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
       string('expirationDate').notNull().numeric(),
     )
 
-    const customers = new Model(
+    const customers = new DataShape(
       'customers',
       string('first').alphabetical().notNull().maxLength(32),
       string('last').notNull().alphabetical().maxLength(32),

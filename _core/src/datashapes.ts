@@ -10,7 +10,7 @@ import { enforceArgumentType } from './util';
  * See models.test.ts for examples of how Models are composed
  */
 
-export function Model(name:string, ...fields) {
+export function DataShape(name:string, ...fields) {
   enforceArgumentType('name', name, 'string');
   this.name = name;
   this.fields = {}
