@@ -80,6 +80,12 @@ const numeric = () => (name, val) => {
   if (false == /^\d+$/.test(val))
   throw new Error(`${name} must only use numeric characters`);
 }
+// https://www.regular-expressions.info/email.html
+const email = () => (name, val) => {
+  const pattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/
+  if (false == /^\d+$/.test(val))
+  throw new Error(`${name} must be an email address`);
+}
 
 /**
  * Constraints available to integer fields
