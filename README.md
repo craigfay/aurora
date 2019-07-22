@@ -50,6 +50,7 @@ Resources:
 * Maybe use GMT format for cookie.expires
 * Maybe allow nested routes
 * config -> settings, views -> pages, routes -> urls
+* Maybe allow ...args in DataShape field constraints
 
 ## Unanswered Questions
 * How can database content be persistent accross image/container destruction?
