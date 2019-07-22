@@ -8,7 +8,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
   stringFieldConstrainTest,
-  stringFieldmustTest,
+  stringFieldMustTest,
   stringFieldNumericTest,
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
@@ -17,12 +17,12 @@ export const tests = [
   integerFieldNotZeroTest,
   integerFieldRangeTest,
   integerFieldConstrainTest,
-  integerFieldmustTest,
+  integerFieldMustTest,
   integerFieldChainableConstraintsTest,
   booleanFieldCreationTest,
   booleanFieldNotNullTest,
   booleanFieldConstrainTest,
-  booleanFieldmustTest,
+  booleanFieldMustTest,
   booleanFieldChainableConstraintsTest,
   modelCreationTest,
 ];
@@ -163,7 +163,7 @@ function stringFieldConstrainTest() {
   }
 }
 
-function stringFieldmustTest() {
+function stringFieldMustTest() {
   const description = `an arbitrary constraint function
   can be applied to string fields that accepts an arg, and
   can be checked with field.test()`;
@@ -319,7 +319,7 @@ function integerFieldConstrainTest() {
   }
 }
 
-function integerFieldmustTest() {
+function integerFieldMustTest() {
   const description = `an arbitrary constraint function
   can be applied to integer fields that accepts an arg, and
   can be checked with field.test()`;
@@ -416,7 +416,7 @@ function booleanFieldConstrainTest() {
   }
 }
 
-function booleanFieldmustTest() {
+function booleanFieldMustTest() {
   const description = `an arbitrary constraint function
   can be applied to boolean fields that accepts an arg, and
   can be checked with field.test()`;
