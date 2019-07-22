@@ -45,8 +45,11 @@ function migrationFromModelsTest() {
       'customers',
       string('first').alphabetical().notNull().maxLength(32),
       string('last').notNull().alphabetical().maxLength(32),
-      string('email').notNull().must(unique)(),
+      string('email').notNull(),
     )
+
+    // Another way to add knex specific constraints
+    customers.fields.email.constraints.unique = true;
 
     assert.equal(
       normalize(toKnex(products)),
