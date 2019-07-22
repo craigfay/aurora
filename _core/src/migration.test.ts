@@ -6,11 +6,26 @@ export const tests = [
   migrationFromModelsTest,
 ];
 
+// Remove extraneous white space
+const normalize = str => str.replace(/\s+/g, ' ').trim();
+
 function migrationFromModelsTest() {
   const description = `Models can be used to
   generate a database migration`;
 
   try {
+    /**
+     * Although effect-less during Model.test()
+     * these functions will set properties on field.constraints
+     * that can be checked later by the code that creates table definition
+     */
+    const unique = arg => (name, val) => {
+      // ...
+    };
+    const references = arg => (name, val) => {
+      // ...
+    };
+
     const products = new Model(
       'products',
       string('name').notNull().maxLength(64),
@@ -19,30 +34,19 @@ function migrationFromModelsTest() {
       integer('quantity').notNegative(),
     )
 
-    const mmyy = (name, val) => {
-      const [mm, yy] = val.split(/../g).map(parseInt);
-      if (0 > mm || 12 < mm)
-      throw new Error(`${name} must be in mmyy format`);
-    }
-
-    const unique = arg => (name, val) => {
-      /**
-       * Although effect-less during Model.test()...
-       * ...this function can be used to enforce uniquenes
-       * ...inside a database table, becuase it will
-       * ...set a field.constraints.unique = true
-       */
-    };
-
     const paymentMethods = new Model(
       'paymentMethods',
-      string('accountHolder').notNull().maxLength(64).constrainWithArg(unique)(),
+      integer('customerId').notNull().constrainWithArg(references)('customers.id'),
       string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
-      string('expirationDate').notNull().numeric().constrain(mmyy),
+      string('expirationDate').notNull().numeric(),
     )
 
-    // Remove extraneous white space
-    const normalize = str => str.replace(/\s+/g, ' ').trim();
+    const customers = new Model(
+      'customers',
+      string('first').alphabetical().notNull().maxLength(32),
+      string('last').notNull().alphabetical().maxLength(32),
+      string('email').notNull().constrainWithArg(unique)(),
+    )
 
     assert.equal(
       normalize(toKnex(products)),
@@ -59,9 +63,19 @@ function migrationFromModelsTest() {
       normalize(toKnex(paymentMethods)),
       normalize(`db.schema.createTable('paymentMethods', table => {
         table.increments();
-        table.string('accountHolder', 64).notNullable().unique();
+        table.integer('customerId').notNullable().references('customers.id');
         table.string('cardNumber', 16).notNullable();
         table.string('expirationDate').notNullable();
+      )};`)
+    )
+
+    assert.equal(
+      normalize(toKnex(customers)),
+      normalize(`db.schema.createTable('customers', table => {
+        table.increments();
+        table.string('first', 32).notNullable();
+        table.string('last', 32).notNullable();
+        table.string('email').notNullable().unique();
       )};`)
     )
 

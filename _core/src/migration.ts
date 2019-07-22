@@ -19,13 +19,15 @@ export function toKnex(model) {
       maxLength,
       notNegative,
       defaultTo,
-      unique
+      unique,
+      references,
     } = fields[name].constraints;
     definition += `  table.${type}('${name}'${maxLength ? `, ${maxLength}` : ''})`;
     definition += notNull ? '.notNullable()' : ''
     definition += notNegative ? '.unsigned()' : '';
-    definition += unique ? '.unique()' : ''
     definition += defaultTo ? `.defaultTo(${JSON.stringify(defaultTo)})` : ''
+    definition += unique ? '.unique()' : ''
+    definition += references ? `.references('${references}')` : ''
     definition += ';\n';
   }
   definition += ')};\n'
