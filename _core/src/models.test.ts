@@ -7,7 +7,6 @@ export const tests = [
   stringFieldMinLengthTest,
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
-  stringFieldConstrainTest,
   stringFieldMustTest,
   stringFieldNumericTest,
   stringFieldChainableConstraintsTest,
@@ -16,12 +15,10 @@ export const tests = [
   integerFieldNotNegativeTest,
   integerFieldNotZeroTest,
   integerFieldRangeTest,
-  integerFieldConstrainTest,
   integerFieldMustTest,
   integerFieldChainableConstraintsTest,
   booleanFieldCreationTest,
   booleanFieldNotNullTest,
-  booleanFieldConstrainTest,
   booleanFieldMustTest,
   booleanFieldChainableConstraintsTest,
   modelCreationTest,
@@ -133,30 +130,6 @@ function stringFieldNumericTest() {
     assert.throws(
       () => field.test('Scooby Doo'),
       { message: 'uuid must only use numeric characters' }
-    );
-  } catch (e) {
-    return e;
-  }
-}
-
-function stringFieldConstrainTest() {
-  const description = `an arbitrary constraint function
-  can be applied to string fields, which can be checked
-  with field.test()`;
-
-  try {
-    let field = string('catchphrase');
-    assert.doesNotThrow(() => field.test('The Eagles'));
-
-    const notInclude = arg => (name, val) => {
-      if (val.includes(arg))
-      throw new Error(`${name} must not include "${arg}"`);
-    }
-
-    field.must(notInclude)(' ');
-    assert.throws(
-      () => field.test('The Eagles'),
-      { message: 'catchphrase must not include " "' }
     );
   } catch (e) {
     return e;
@@ -295,10 +268,10 @@ function integerFieldRangeTest() {
   }
 }
 
-function integerFieldConstrainTest() {
+function integerFieldMustTest() {
   const description = `an arbitrary constraint function
-  can be applied to integer fields, which can be checked
-  with field.test()`;
+  can be applied to integer fields that accepts an arg, and
+  can be checked with field.test()`;
 
   try {
     let field = integer('repetitions');
@@ -313,30 +286,6 @@ function integerFieldConstrainTest() {
     assert.throws(
       () => field.test(7),
       { message: 'repetitions must be divisible by 4' }
-    );
-  } catch (e) {
-    return e;
-  }
-}
-
-function integerFieldMustTest() {
-  const description = `an arbitrary constraint function
-  can be applied to integer fields that accepts an arg, and
-  can be checked with field.test()`;
-
-  try {
-    let field = integer('luckyNumber');
-    assert.doesNotThrow(() => field.test(15));
-
-    const divideBy = arg => (name, val) => {
-      if (val % arg != 0) 
-      throw new Error(`${name} must be divisible by ${arg}`);
-    }
-
-    field.must(divideBy)(6);
-    assert.throws(
-      () => field.test(15),
-      { message: 'luckyNumber must be divisible by 6' }
     );
   } catch (e) {
     return e;
@@ -386,30 +335,6 @@ function booleanFieldNotNullTest() {
     assert.throws(
       () => field.test(),
       { message: 'oldEnough must not be null' }
-    );
-  } catch (e) {
-    return e;
-  }
-}
-
-function booleanFieldConstrainTest() {
-  const description = `an arbitrary constraint function
-  can be applied to integer fields, which can be checked
-  with field.test()`;
-
-  try {
-    let field = boolean('repeats');
-    assert.doesNotThrow(() => field.test(true));
-
-    const andFalse = arg => (name, val) => {
-      if (!(val && false))
-      throw new Error(`${name} and false must both be true`);
-    }
-    
-    field.must(andFalse)();
-    assert.throws(
-      () => field.test(true),
-      { message: 'repeats and false must both be true' }
     );
   } catch (e) {
     return e;
