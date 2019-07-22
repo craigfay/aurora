@@ -411,7 +411,7 @@ function dataShapeCreationTest() {
       integer('kills').notNegative().notZero(),
     )
 
-    assert.doesNotThrow(() => cowboy.test({
+    assert.doesNotThrow(() => cowboy.with({
         birthplace: 'Rio Grande',
         catchphrase: 'It\'s high noon',
         firstname: 'Juan Carlos',
@@ -422,7 +422,7 @@ function dataShapeCreationTest() {
     );
 
     assert.throws(
-      () => cowboy.test({
+      () => cowboy.with({
         catchphrase: 'Get along lil doggy',
         firstname: 'Rattlesnake Bill',
         lastname: 'Turner',

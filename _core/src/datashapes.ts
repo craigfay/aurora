@@ -19,7 +19,7 @@ export function DataShape(name:string, ...fields) {
     this.fields[name] = { test, tests, constraints };
   });
 
-  this.test = obj => {
+  this.with = obj => {
     Object.keys(obj).forEach(name => this.fields[name].test(obj[name]));
   }
 }
