@@ -35,7 +35,8 @@ function Field(name:string) {
   this.constraints = {};
   this.constrain = constrain.bind(this);
   this.constrainWithArg = constrainWithArg.bind(this);
-  this.test = (val=null) => this.tests.forEach(c => c(name, val));
+  this.default = () => this.constraints.defaultTo || null;
+  this.test = (val=this.default()) => this.tests.forEach(c => c(name, val));
 }
 
 /**
@@ -44,6 +45,9 @@ function Field(name:string) {
 const notNull = () => (name, val) => {
   if (val == null)
   throw new Error(`${name} must not be null`);
+}
+const defaultTo = arg => (name, val) => {
+  // ...
 }
 
 /**
@@ -133,6 +137,7 @@ export function string(name) {
   f.constrain(stringFieldType());
 
   f.notNull = f.constrainWithArg(notNull)
+  f.defaultTo = f.constrainWithArg(defaultTo);
   f.minLength = f.constrainWithArg(minLength);
   f.maxLength = f.constrainWithArg(maxLength);
   f.alphabetical = f.constrainWithArg(alphabetical)
@@ -150,6 +155,7 @@ export function integer(name) {
   f.constrain(integerFieldType());
 
   f.notNull = f.constrainWithArg(notNull);
+  f.defaultTo = f.constrainWithArg(defaultTo);
   f.notNegative = f.constrainWithArg(notNegative);
   f.notZero = f.constrainWithArg(notZero);
   f.range = f.constrainWithArg(range);
@@ -166,5 +172,6 @@ export function boolean(name) {
   f.constrain(booleanFieldType());
 
   f.notNull = f.constrainWithArg(notNull);
+  f.defaultTo = f.constrainWithArg(defaultTo);
   return f;
 }

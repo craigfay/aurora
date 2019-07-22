@@ -18,12 +18,14 @@ export function toKnex(model) {
       notNull,
       maxLength,
       notNegative,
+      defaultTo,
       unique
     } = fields[name].constraints;
     definition += `  table.${type}('${name}'${maxLength ? `, ${maxLength}` : ''})`;
     definition += notNull ? '.notNullable()' : ''
     definition += notNegative ? '.unsigned()' : '';
     definition += unique ? '.unique()' : ''
+    definition += defaultTo ? `.defaultTo(${JSON.stringify(defaultTo)})` : ''
     definition += ';\n';
   }
   definition += ')};\n'
