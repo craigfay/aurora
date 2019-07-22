@@ -148,15 +148,15 @@ function stringFieldConstrainTest() {
     let field = string('catchphrase');
     assert.doesNotThrow(() => field.test('The Eagles'));
 
-    const noSpaces = (name, val) => {
-      if (val.includes(' '))
-      throw new Error(`${name} must not include spaces`);
+    const notInclude = arg => (name, val) => {
+      if (val.includes(arg))
+      throw new Error(`${name} must not include "${arg}"`);
     }
 
-    field.constrain(noSpaces);
+    field.must(notInclude)(' ');
     assert.throws(
       () => field.test('The Eagles'),
-      { message: 'catchphrase must not include spaces' }
+      { message: 'catchphrase must not include " "' }
     );
   } catch (e) {
     return e;
@@ -198,7 +198,7 @@ function stringFieldChainableConstraintsTest() {
       .minLength(8)
       .maxLength(32)
       .alphabetical()
-      .constrain(x => x)
+      .must(x => x)
     });
 
   } catch (e) {
@@ -304,15 +304,15 @@ function integerFieldConstrainTest() {
     let field = integer('repetitions');
     assert.doesNotThrow(() => field.test(7));
 
-    const divisibleByFour = (name, val) => {
-      if (val % 4 != 0)
-      throw new Error(`${name} must be divisible by four`);
+    const divideBy = arg => (name, val) => {
+      if (val % arg != 0)
+      throw new Error(`${name} must be divisible by ${arg}`);
     }
     
-    field.constrain(divisibleByFour);
+    field.must(divideBy)(4);
     assert.throws(
       () => field.test(7),
-      { message: 'repetitions must be divisible by four' }
+      { message: 'repetitions must be divisible by 4' }
     );
   } catch (e) {
     return e;
@@ -353,7 +353,7 @@ function integerFieldChainableConstraintsTest() {
       .notNull()
       .notNegative()
       .notZero()
-      .constrain(x => x)
+      .must(x => x)
     });
   } catch (e) {
     return e;
@@ -401,12 +401,12 @@ function booleanFieldConstrainTest() {
     let field = boolean('repeats');
     assert.doesNotThrow(() => field.test(true));
 
-    const andFalse = (name, val) => {
+    const andFalse = arg => (name, val) => {
       if (!(val && false))
       throw new Error(`${name} and false must both be true`);
     }
     
-    field.constrain(andFalse);
+    field.must(andFalse)();
     assert.throws(
       () => field.test(true),
       { message: 'repeats and false must both be true' }
@@ -445,7 +445,7 @@ function booleanFieldChainableConstraintsTest() {
   fields are chainable`;
 
   try {
-    const andFalse = (name, val) => {
+    const andFalse = arg => (name, val) => {
       if (!(val && false))
       throw new Error(`${name} and false must both be true`);
     }
@@ -458,7 +458,7 @@ function booleanFieldChainableConstraintsTest() {
     assert.doesNotThrow(() => {
       let field = boolean('success')
       .notNull()
-      .constrain(andFalse)
+      .must(andFalse)()
       .must(beTrueAnd)(true)
     });
   } catch (e) {
@@ -471,16 +471,16 @@ function modelCreationTest() {
   from a list of fields`;
 
   try {
-    let mustBeJuanCarlos = (name, val) => {
-      if (val !== 'Juan Carlos')
-      throw new Error(`${name} must be "Juan Carlos"`);
+    let be = arg => (name, val) => {
+      if (val !== arg)
+      throw new Error(`${name} must be "${arg}"`);
     }
 
     let cowboy = new Model(
       'cowboy',
       string('birthplace'),
       string('catchphrase').notNull(),
-      string('firstname').minLength(1).constrain(mustBeJuanCarlos),
+      string('firstname').minLength(1).must(be)('Juan Carlos'),
       string('lastname').maxLength(12).notNull(),
       integer('age').notNull().notNegative().notZero(),
       integer('kills').notNegative().notZero(),

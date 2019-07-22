@@ -35,8 +35,7 @@ function Field(name:string) {
   this.tests = [];
   // records arg values given for each constraint
   this.constraints = {};
-  // Custom constraint hooks
-  this.constrain = constrain.bind(this);
+  // Custom constraint hook
   this.must = must.bind(this);
   // Generic constraints
   this.notNull = this.must(notNull);
@@ -61,7 +60,7 @@ const defaultTo = arg => (name, val) => {
  * Constraints available to string fields
  */
 
-const stringFieldType = () => (name, val) => {
+const beStringFieldType = () => (name, val) => {
   if (val != null && typeof val != 'string')
   throw new Error(`${name} must be a string. Received ${typeof val}`);
 }
@@ -86,7 +85,7 @@ const numeric = () => (name, val) => {
  * Constraints available to integer fields
  */
 
-const integerFieldType = () => (name, val) => {
+const beIntegerFieldType = () => (name, val) => {
   if (val != null && !Number.isInteger(val))
   throw new Error(`${name} must be an integer. Received ${typeof val}`);
 }
@@ -108,7 +107,7 @@ const range = (arg) => (name, val) => {
  * Constraints available to boolean fields
  */
 
-const booleanFieldType = () => (name, val) => {
+const beBooleanFieldType = () => (name, val) => {
   if (val != null && typeof val != 'boolean')
   throw new Error(`${name} must be a boolean. Received ${typeof val}`);
 }
@@ -117,10 +116,6 @@ const booleanFieldType = () => (name, val) => {
  * The constrain function attached to every field type
  * which allows custom arbitrary constraints
  */
-function constrain(fn) {
-  this.tests.push(fn)
-  return this;
-}
 
 /**
  * The must function attached to every field type
@@ -141,7 +136,7 @@ function must(fn) {
 export function string(name) {
   let f: any = new Field(name);
   f.constraints.type = 'string'
-  f.constrain(stringFieldType());
+  f.must(beStringFieldType)();
 
   f.minLength = f.must(minLength);
   f.maxLength = f.must(maxLength);
@@ -157,7 +152,7 @@ export function string(name) {
 export function integer(name) {
   let f: any = new Field(name);
   f.constraints.type = 'integer';
-  f.constrain(integerFieldType());
+  f.must(beIntegerFieldType)()
 
   f.notNegative = f.must(notNegative);
   f.notZero = f.must(notZero);
@@ -172,6 +167,6 @@ export function integer(name) {
 export function boolean(name) {
   let f: any = new Field(name);
   f.constraints.type = 'boolean';
-  f.constrain(booleanFieldType());
+  f.must(beBooleanFieldType)();
   return f;
 }
