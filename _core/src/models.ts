@@ -35,6 +35,8 @@ function Field(name:string) {
   this.constraints = {};
   this.constrain = constrain.bind(this);
   this.constrainWithArg = constrainWithArg.bind(this);
+  this.notNull = this.constrainWithArg(notNull);
+  this.defaultTo = this.constrainWithArg(defaultTo);
   this.default = () => this.constraints.defaultTo || null;
   this.test = (val=this.default()) => this.tests.forEach(c => c(name, val));
 }
@@ -136,8 +138,6 @@ export function string(name) {
   f.constraints.type = 'string'
   f.constrain(stringFieldType());
 
-  f.notNull = f.constrainWithArg(notNull)
-  f.defaultTo = f.constrainWithArg(defaultTo);
   f.minLength = f.constrainWithArg(minLength);
   f.maxLength = f.constrainWithArg(maxLength);
   f.alphabetical = f.constrainWithArg(alphabetical)
@@ -154,8 +154,6 @@ export function integer(name) {
   f.constraints.type = 'integer';
   f.constrain(integerFieldType());
 
-  f.notNull = f.constrainWithArg(notNull);
-  f.defaultTo = f.constrainWithArg(defaultTo);
   f.notNegative = f.constrainWithArg(notNegative);
   f.notZero = f.constrainWithArg(notZero);
   f.range = f.constrainWithArg(range);
@@ -170,8 +168,5 @@ export function boolean(name) {
   let f: any = new Field(name);
   f.constraints.type = 'boolean';
   f.constrain(booleanFieldType());
-
-  f.notNull = f.constrainWithArg(notNull);
-  f.defaultTo = f.constrainWithArg(defaultTo);
   return f;
 }
