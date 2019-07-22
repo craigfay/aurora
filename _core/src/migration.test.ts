@@ -36,7 +36,7 @@ function migrationFromModelsTest() {
 
     const paymentMethods = new Model(
       'paymentMethods',
-      integer('customerId').notNull().constrainWithArg(references)('customers.id'),
+      integer('customerId').notNull().must(references)('customers.id'),
       string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
       string('expirationDate').notNull().numeric(),
     )
@@ -45,7 +45,7 @@ function migrationFromModelsTest() {
       'customers',
       string('first').alphabetical().notNull().maxLength(32),
       string('last').notNull().alphabetical().maxLength(32),
-      string('email').notNull().constrainWithArg(unique)(),
+      string('email').notNull().must(unique)(),
     )
 
     assert.equal(

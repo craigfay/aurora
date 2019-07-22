@@ -37,10 +37,10 @@ function Field(name:string) {
   this.constraints = {};
   // Custom constraint hooks
   this.constrain = constrain.bind(this);
-  this.constrainWithArg = constrainWithArg.bind(this);
+  this.must = must.bind(this);
   // Generic constraints
-  this.notNull = this.constrainWithArg(notNull);
-  this.defaultTo = this.constrainWithArg(defaultTo);
+  this.notNull = this.must(notNull);
+  this.defaultTo = this.must(defaultTo);
 
   this._default = () => this.constraints.defaultTo || null;
   this.test = (val=this._default()) => this.tests.forEach(c => c(name, val));
@@ -123,10 +123,10 @@ function constrain(fn) {
 }
 
 /**
- * The constrainWithArg function attached to every field type
+ * The must function attached to every field type
  * which allows custom arbitrary constraints that take an argument
  */
-function constrainWithArg(fn) {
+function must(fn) {
   return (arg=true) => {
     this.constraints[fn.name] = arg;
     this.tests.push(fn(arg))
@@ -143,10 +143,10 @@ export function string(name) {
   f.constraints.type = 'string'
   f.constrain(stringFieldType());
 
-  f.minLength = f.constrainWithArg(minLength);
-  f.maxLength = f.constrainWithArg(maxLength);
-  f.alphabetical = f.constrainWithArg(alphabetical)
-  f.numeric = f.constrainWithArg(numeric)
+  f.minLength = f.must(minLength);
+  f.maxLength = f.must(maxLength);
+  f.alphabetical = f.must(alphabetical)
+  f.numeric = f.must(numeric)
   return f;
 }
 
@@ -159,9 +159,9 @@ export function integer(name) {
   f.constraints.type = 'integer';
   f.constrain(integerFieldType());
 
-  f.notNegative = f.constrainWithArg(notNegative);
-  f.notZero = f.constrainWithArg(notZero);
-  f.range = f.constrainWithArg(range);
+  f.notNegative = f.must(notNegative);
+  f.notZero = f.must(notZero);
+  f.range = f.must(range);
   return f;
 }
 

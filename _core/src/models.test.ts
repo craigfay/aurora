@@ -8,7 +8,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
   stringFieldConstrainTest,
-  stringFieldConstrainWithArgTest,
+  stringFieldmustTest,
   stringFieldNumericTest,
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
@@ -17,12 +17,12 @@ export const tests = [
   integerFieldNotZeroTest,
   integerFieldRangeTest,
   integerFieldConstrainTest,
-  integerFieldConstrainWithArgTest,
+  integerFieldmustTest,
   integerFieldChainableConstraintsTest,
   booleanFieldCreationTest,
   booleanFieldNotNullTest,
   booleanFieldConstrainTest,
-  booleanFieldConstrainWithArgTest,
+  booleanFieldmustTest,
   booleanFieldChainableConstraintsTest,
   modelCreationTest,
 ];
@@ -163,7 +163,7 @@ function stringFieldConstrainTest() {
   }
 }
 
-function stringFieldConstrainWithArgTest() {
+function stringFieldmustTest() {
   const description = `an arbitrary constraint function
   can be applied to string fields that accepts an arg, and
   can be checked with field.test()`;
@@ -172,12 +172,12 @@ function stringFieldConstrainWithArgTest() {
     let field = string('password');
     assert.doesNotThrow(() => field.test('try_and_break_this'));
 
-    const mustContain = arg => (name, val) => {
+    const include = arg => (name, val) => {
       if (!val.includes(arg))
       throw new Error(`${name} must contain "${arg}"`);
     }
 
-    field.constrainWithArg(mustContain)('!');
+    field.must(include)('!');
     assert.throws(
       () => field.test('try_and_break_this'),
       { message: 'password must contain "!"' }
@@ -319,7 +319,7 @@ function integerFieldConstrainTest() {
   }
 }
 
-function integerFieldConstrainWithArgTest() {
+function integerFieldmustTest() {
   const description = `an arbitrary constraint function
   can be applied to integer fields that accepts an arg, and
   can be checked with field.test()`;
@@ -328,12 +328,12 @@ function integerFieldConstrainWithArgTest() {
     let field = integer('luckyNumber');
     assert.doesNotThrow(() => field.test(15));
 
-    const divisibleBy = arg => (name, val) => {
+    const divideBy = arg => (name, val) => {
       if (val % arg != 0) 
       throw new Error(`${name} must be divisible by ${arg}`);
     }
 
-    field.constrainWithArg(divisibleBy)(6);
+    field.must(divideBy)(6);
     assert.throws(
       () => field.test(15),
       { message: 'luckyNumber must be divisible by 6' }
@@ -416,7 +416,7 @@ function booleanFieldConstrainTest() {
   }
 }
 
-function booleanFieldConstrainWithArgTest() {
+function booleanFieldmustTest() {
   const description = `an arbitrary constraint function
   can be applied to boolean fields that accepts an arg, and
   can be checked with field.test()`;
@@ -425,12 +425,12 @@ function booleanFieldConstrainWithArgTest() {
     let field = boolean('lucky');
     assert.doesNotThrow(() => field.test(true));
 
-    const and = arg => (name, val) => {
+    const beTrueAnd = arg => (name, val) => {
       if (!(arg && val)) 
       throw new Error(`${name} and ${arg} are not both true`);
     }
 
-    field.constrainWithArg(and)(false);
+    field.must(beTrueAnd)(false);
     assert.throws(
       () => field.test(true),
       { message: 'lucky and false are not both true' }
@@ -450,7 +450,7 @@ function booleanFieldChainableConstraintsTest() {
       throw new Error(`${name} and false must both be true`);
     }
 
-    const and = arg => (name, val) => {
+    const beTrueAnd = arg => (name, val) => {
       if (!(arg && val)) 
       throw new Error(`${name} and ${arg} are not both true`);
     }
@@ -459,7 +459,7 @@ function booleanFieldChainableConstraintsTest() {
       let field = boolean('success')
       .notNull()
       .constrain(andFalse)
-      .constrainWithArg(and)(true)
+      .must(beTrueAnd)(true)
     });
   } catch (e) {
     return e;
