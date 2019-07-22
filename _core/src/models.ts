@@ -15,8 +15,8 @@ export function Model(name:string, ...fields) {
   this.name = name;
   this.fields = {}
   fields.forEach(f => {
-    const { name, ...rest } = f;
-    this.fields[name] = { ...rest };
+    const { name, test, tests, constraints } = f;
+    this.fields[name] = { test, tests, constraints };
   });
 
   this.test = obj => {
