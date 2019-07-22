@@ -31,14 +31,19 @@ export function Model(name:string, ...fields) {
 function Field(name:string) {
   enforceArgumentType('name', name, 'string');
   this.name = name;
+  // functions that prove/disprove constraint compliance
   this.tests = [];
+  // records arg values given for each constraint
   this.constraints = {};
+  // Custom constraint hooks
   this.constrain = constrain.bind(this);
   this.constrainWithArg = constrainWithArg.bind(this);
+  // Generic constraints
   this.notNull = this.constrainWithArg(notNull);
   this.defaultTo = this.constrainWithArg(defaultTo);
-  this.default = () => this.constraints.defaultTo || null;
-  this.test = (val=this.default()) => this.tests.forEach(c => c(name, val));
+
+  this._default = () => this.constraints.defaultTo || null;
+  this.test = (val=this._default()) => this.tests.forEach(c => c(name, val));
 }
 
 /**
