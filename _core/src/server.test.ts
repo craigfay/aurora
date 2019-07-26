@@ -11,7 +11,6 @@ export const tests = [
   responseConstructor,
   requestBodyParserURLencoded,
   requestBodyParserJSON,
-  afterResponseHandlersTest,
 ];
 
 async function portZeroTest() {
@@ -199,34 +198,6 @@ async function requestBodyParserJSON() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: 'wilbur' }),
     });
-
-    await requests.close();
-
-  } catch (e) {
-    return e;
-  }
-}
-
-async function afterResponseHandlersTest() {
-  const description = `Request handlers that apply after
-  a response has been sent will still run`;
-
-  try {
-    let didRun = false;
-    const requests = new HttpServer({ port: 0 });
-
-    requests.route('POST', '/', (req, meta) => {
-      return new HttpResponse({
-        status: 200,
-      });
-    })
-    requests.route('POST', '/', (req, meta) => {
-      didRun = true;
-    })
-
-    await requests.listen();
-    await fetch(`http://0.0.0.0:${requests.port()}`, { method: 'POST' });
-    assert(didRun);
 
     await requests.close();
 

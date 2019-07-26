@@ -41,9 +41,10 @@ export class HttpServer implements HttpServerInterface {
         const response: HttpResponseInterface | void = await handler(req, meta);
         if (response) {
           adaptResponse(response, ctx);
+        } else {
+          ctx._meta = meta;
+          await next();
         }
-        ctx._meta = meta;
-        await next();
     })
   }
 
