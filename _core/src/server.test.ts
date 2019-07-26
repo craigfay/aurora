@@ -7,9 +7,9 @@ export const tests = [
   portZeroTest,
   defaultHeadersTest,
   handlerMetaTest,
-  illegalRouteMethods,
-  responseConstructor,
-  requestBodyParserURLencoded,
+  illegalRouteMethodsTest,
+  responseConstructorTest,
+  requestBodyParserURLencodedTest,
   requestBodyParserJSON,
 ];
 
@@ -94,7 +94,7 @@ async function handlerMetaTest() {
   }
 }
 
-async function illegalRouteMethods() {
+async function illegalRouteMethodsTest() {
   const description = `Registering Unsupported 
   request methods should throw an error`;
 
@@ -115,7 +115,7 @@ async function illegalRouteMethods() {
   }
 }
 
-async function responseConstructor() {
+async function responseConstructorTest() {
   const description = `The HttpResponse constructor
   can be used to validate return material, and allows
   passing only some of the required properties`;
@@ -135,7 +135,7 @@ async function responseConstructor() {
   }
 }
 
-async function requestBodyParserURLencoded() {
+async function requestBodyParserURLencodedTest() {
   const description = `URL encoded body content
   will be parsed into an object`;
 

@@ -3,6 +3,7 @@
  */
 
 import { performance } from 'perf_hooks';
+import { exists } from 'fs';
 
 // Console Colors
 const red = '\x1b[31m';
@@ -34,7 +35,7 @@ async function testSuite() {
   ];
   for (const test of allTests) {
     const result = await runWithTimer(test);
-    if (result instanceof Error) return result;
+    if (result instanceof Error) process.exit(1);
   }
 }
 
