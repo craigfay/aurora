@@ -27,7 +27,6 @@ function migrationFromModelsTest() {
     };
 
     const products = new DataShape(
-      'products',
       string('name').notNull().maxLength(64),
       string('description'),
       integer('price').notNull().notNegative(),
@@ -35,14 +34,12 @@ function migrationFromModelsTest() {
     )
 
     const paymentMethods = new DataShape(
-      'paymentMethods',
       integer('customerId').notNull().must(references)('customers.id'),
       string('cardNumber').notNull().numeric().minLength(16).maxLength(16),
       string('expirationDate').notNull().numeric(),
     )
 
     const customers = new DataShape(
-      'customers',
       string('first').alphabetical().notNull().maxLength(32),
       string('last').notNull().alphabetical().maxLength(32),
       string('email').notNull(),
@@ -52,7 +49,7 @@ function migrationFromModelsTest() {
     customers.fields.email.constraints.unique = true;
 
     assert.equal(
-      normalize(toKnex(products)),
+      normalize(toKnex(products, 'products')),
       normalize(`db.schema.createTable('products', table => {
         table.increments();
         table.string('name', 64).notNullable();
@@ -63,7 +60,7 @@ function migrationFromModelsTest() {
     )
 
     assert.equal(
-      normalize(toKnex(paymentMethods)),
+      normalize(toKnex(paymentMethods, 'paymentMethods')),
       normalize(`db.schema.createTable('paymentMethods', table => {
         table.increments();
         table.integer('customerId').notNullable().references('customers.id');
@@ -73,7 +70,7 @@ function migrationFromModelsTest() {
     )
 
     assert.equal(
-      normalize(toKnex(customers)),
+      normalize(toKnex(customers, 'customers')),
       normalize(`db.schema.createTable('customers', table => {
         table.increments();
         table.string('first', 32).notNullable();

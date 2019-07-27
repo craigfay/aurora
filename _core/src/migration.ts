@@ -5,11 +5,11 @@ import * as knex from 'knex';
  * Experimental: Build knex table definition from DataShape
  * @param DataShape
  */
-export function toKnex(DataShape) {
-  const { name, fields } = DataShape;
+export function toKnex(DataShape, tableName) {
+  const { fields } = DataShape;
 
   let definition = '';
-  definition += `db.schema.createTable('${name}', table => {\n`
+  definition += `db.schema.createTable('${tableName}', table => {\n`
   definition += `  table.increments();\n`
 
   for (const name in fields) {

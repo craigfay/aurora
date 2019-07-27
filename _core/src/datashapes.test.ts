@@ -402,7 +402,6 @@ function dataShapeCreationTest() {
     }
 
     let cowboy = new DataShape(
-      'cowboy',
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),

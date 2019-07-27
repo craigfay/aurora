@@ -10,9 +10,7 @@ import { enforceArgumentType } from './util';
  * See models.test.ts for examples of how Models are composed
  */
 
-export function DataShape(name:string, ...fields) {
-  enforceArgumentType('name', name, 'string');
-  this.name = name;
+export function DataShape(...fields) {
   this.fields = {}
   fields.forEach(f => {
     const { name, test, tests, constraints } = f;
