@@ -22,7 +22,7 @@
   "dependencies": {
     "@koa/cors": "^3.0.0",
     "body-parser": "^1.19.0",
-    "knex": "^0.13.0",
+    "knex": "^0.19.5",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
